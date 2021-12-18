@@ -34,6 +34,22 @@ extension CCKDatabase {
       clientChangeTokenData: clientChangeTokenData)
   }
 
+#if compiler(>=5.5.2)
+  public func save(
+    record: CKRecord,
+    withConfiguration configuration: CKOperation.Configuration? = nil,
+    savePolicy: CKModifyRecordsOperation.RecordSavePolicy = .ifServerRecordUnchanged,
+    clientChangeTokenData: Data? = nil
+  ) async throws -> CKRecord {
+    try await save(
+      record: record,
+      withConfiguration: configuration,
+      savePolicy: savePolicy,
+      clientChangeTokenData: clientChangeTokenData
+    ).values.single()
+  }
+#endif
+
   /// Saves multiple records.
   ///
   /// - Parameters:
@@ -81,6 +97,12 @@ extension CCKDatabase {
   public func saveAtBackgroundPriority(record: CKRecord) -> AnyPublisher<CKRecord, Error> {
     publisherAtBackgroundPriorityFrom(save, with: record)
   }
+
+#if compiler(>=5.5.2)
+  public func saveAtBackgroundPriority(record: CKRecord) async throws -> CKRecord {
+    try await saveAtBackgroundPriority(record: record).values.single()
+  }
+#endif
 
   /// Saves a single record.
   ///
@@ -155,6 +177,18 @@ extension CCKDatabase {
     delete(recordIDs: [recordID], withConfiguration: configuration)
   }
 
+#if compiler(>=5.5.2)
+  public func delete(
+    recordID: CKRecord.ID,
+    withConfiguration configuration: CKOperation.Configuration? = nil
+  ) async throws -> CKRecord.ID {
+    try await delete(
+      recordID: recordID,
+      withConfiguration: configuration
+    ).values.single()
+  }
+#endif
+
   /// Deletes multiple records.
   ///
   /// - Parameters:
@@ -197,6 +231,12 @@ extension CCKDatabase {
   {
     publisherAtBackgroundPriorityFrom(delete, with: recordID)
   }
+
+#if compiler(>=5.5.2)
+  public func deleteAtBackgroundPriority(recordID: CKRecord.ID) async throws -> CKRecord.ID {
+    try await deleteAtBackgroundPriority(recordID: recordID).values.single()
+  }
+#endif
 
   /// Modifies one or more records.
   ///
@@ -336,6 +376,20 @@ extension CCKDatabase {
     fetch(recordIDs: [recordID], desiredKeys: desiredKeys, withConfiguration: configuration)
   }
 
+#if compiler(>=5.5.2)
+  public func fetch(
+    recordID: CKRecord.ID,
+    desiredKeys: [CKRecord.FieldKey]? = nil,
+    withConfiguration configuration: CKOperation.Configuration? = nil
+  ) async throws -> CKRecord {
+    try await fetch(
+      recordID: recordID,
+      desiredKeys: desiredKeys,
+      withConfiguration: configuration
+    ).values.single()
+  }
+#endif
+
   /// Fetches multiple records.
   ///
   /// - Parameters:
@@ -378,6 +432,12 @@ extension CCKDatabase {
   ) -> AnyPublisher<CKRecord, Error> {
     publisherAtBackgroundPriorityFrom(fetch, with: recordID)
   }
+
+#if compiler(>=5.5.2)
+  public func fetchAtBackgroundPriority(withRecordID recordID: CKRecord.ID) async throws -> CKRecord {
+    try await fetchAtBackgroundPriority(withRecordID: recordID).values.single()
+  }
+#endif
 
   /// Fetches the record with the specified ID.
   ///

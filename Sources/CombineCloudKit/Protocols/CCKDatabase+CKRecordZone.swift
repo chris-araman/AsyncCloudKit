@@ -26,6 +26,12 @@ extension CCKDatabase {
     publisherAtBackgroundPriorityFrom(save, with: recordZone)
   }
 
+#if compiler(>=5.5.2)
+  public func saveAtBackgroundPriority(recordZone: CKRecordZone) async throws -> CKRecordZone {
+    try await saveAtBackgroundPriority(recordZone: recordZone).values.single()
+  }
+#endif
+
   /// Saves a single record zone.
   ///
   /// - Parameters:
@@ -41,6 +47,18 @@ extension CCKDatabase {
   ) -> AnyPublisher<CKRecordZone, Error> {
     save(recordZones: [recordZone], withConfiguration: configuration)
   }
+
+#if compiler(>=5.5.2)
+  public func save(
+    recordZone: CKRecordZone,
+    withConfiguration configuration: CKOperation.Configuration? = nil
+  ) async throws -> CKRecordZone {
+    try await save(
+      recordZone: recordZone,
+      withConfiguration: configuration
+    ).values.single()
+  }
+#endif
 
   /// Saves multiple record zones.
   ///
@@ -77,6 +95,12 @@ extension CCKDatabase {
     publisherAtBackgroundPriorityFrom(delete, with: recordZoneID)
   }
 
+#if compiler(>=5.5.2)
+  public func deleteAtBackgroundPriority(recordZoneID: CKRecordZone.ID) async throws -> CKRecordZone.ID {
+    try await deleteAtBackgroundPriority(recordZoneID: recordZoneID).values.single()
+  }
+#endif
+
   /// Deletes a single record zone.
   ///
   /// - Parameters:
@@ -93,6 +117,18 @@ extension CCKDatabase {
   ) -> AnyPublisher<CKRecordZone.ID, Error> {
     delete(recordZoneIDs: [recordZoneID], withConfiguration: configuration)
   }
+
+#if compiler(>=5.5.2)
+  public func delete(
+    recordZoneID: CKRecordZone.ID,
+    withConfiguration configuration: CKOperation.Configuration? = nil
+  ) async throws -> CKRecordZone.ID {
+    try await delete(
+      recordZoneID: recordZoneID,
+      withConfiguration: configuration
+    ).values.single()
+  }
+#endif
 
   /// Deletes multiple record zones.
   ///
@@ -156,6 +192,12 @@ extension CCKDatabase {
     publisherAtBackgroundPriorityFrom(fetch, with: recordZoneID)
   }
 
+#if compiler(>=5.5.2)
+  public func fetchAtBackgroundPriority(withRecordZoneID recordZoneID: CKRecordZone.ID) async throws -> CKRecordZone {
+    try await fetchAtBackgroundPriority(withRecordZoneID: recordZoneID).values.single()
+  }
+#endif
+
   /// Fetches the record zone with the specified ID.
   ///
   /// - Parameters:
@@ -171,6 +213,18 @@ extension CCKDatabase {
   ) -> AnyPublisher<CKRecordZone, Error> {
     fetch(recordZoneIDs: [recordZoneID], withConfiguration: configuration)
   }
+
+#if compiler(>=5.5.2)
+  public func fetch(
+    recordZoneID: CKRecordZone.ID,
+    withConfiguration configuration: CKOperation.Configuration? = nil
+  ) async throws -> CKRecordZone {
+    try await fetch(
+      recordZoneID: recordZoneID,
+      withConfiguration: configuration
+    ).values.single()
+  }
+#endif
 
   /// Fetches multiple record zones.
   ///

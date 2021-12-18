@@ -26,6 +26,12 @@ extension CCKDatabase {
     publisherAtBackgroundPriorityFrom(save, with: subscription)
   }
 
+#if compiler(>=5.5.2)
+  public func saveAtBackgroundPriority(subscription: CKSubscription) async throws -> CKSubscription {
+    try await saveAtBackgroundPriority(subscription: subscription).values.single()
+  }
+#endif
+
   /// Saves a single subscription.
   ///
   /// - Parameters:
@@ -41,6 +47,18 @@ extension CCKDatabase {
   ) -> AnyPublisher<CKSubscription, Error> {
     save(subscriptions: [subscription], withConfiguration: configuration)
   }
+
+#if compiler(>=5.5.2)
+  public func save(
+    subscription: CKSubscription,
+    withConfiguration configuration: CKOperation.Configuration? = nil
+  ) async throws -> CKSubscription {
+    try await save(
+      subscription: subscription,
+      withConfiguration: configuration
+    ).values.single()
+  }
+#endif
 
   /// Saves multiple subscriptions.
   ///
@@ -76,6 +94,12 @@ extension CCKDatabase {
     publisherAtBackgroundPriorityFrom(delete, with: subscriptionID)
   }
 
+#if compiler(>=5.5.2)
+  public func deleteAtBackgroundPriority(subscriptionID: CKSubscription.ID) async throws -> CKSubscription.ID {
+    try await deleteAtBackgroundPriority(subscriptionID: subscriptionID).values.single()
+  }
+#endif
+
   /// Deletes a single subscription.
   ///
   /// - Parameters:
@@ -92,6 +116,18 @@ extension CCKDatabase {
   ) -> AnyPublisher<CKSubscription.ID, Error> {
     delete(subscriptionIDs: [subscriptionID], withConfiguration: configuration)
   }
+
+#if compiler(>=5.5.2)
+  public func delete(
+    subscriptionID: CKSubscription.ID,
+    withConfiguration configuration: CKOperation.Configuration? = nil
+  ) async throws -> CKSubscription.ID {
+    try await delete(
+      subscriptionID: subscriptionID,
+      withConfiguration: configuration
+    ).values.single()
+  }
+#endif
 
   /// Deletes multiple subscriptions.
   ///
@@ -155,6 +191,12 @@ extension CCKDatabase {
     publisherAtBackgroundPriorityFrom(fetch, with: subscriptionID)
   }
 
+#if compiler(>=5.5.2)
+  public func fetchAtBackgroundPriority(withSubscriptionID subscriptionID: CKSubscription.ID) async throws -> CKSubscription {
+    try await fetchAtBackgroundPriority(withSubscriptionID: subscriptionID).values.single()
+  }
+#endif
+
   /// Fetches the subscription with the specified ID.
   ///
   /// - Parameters:
@@ -170,6 +212,18 @@ extension CCKDatabase {
   ) -> AnyPublisher<CKSubscription, Error> {
     fetch(subscriptionIDs: [subscriptionID], withConfiguration: configuration)
   }
+
+#if compiler(>=5.5.2)
+  public func fetch(
+    subscriptionID: CKSubscription.ID,
+    withConfiguration configuration: CKOperation.Configuration? = nil
+  ) async throws -> CKSubscription {
+    try await fetch(
+      subscriptionID: subscriptionID,
+      withConfiguration: configuration
+    ).values.single()
+  }
+#endif
 
   /// Fetches multiple subscriptions.
   ///
