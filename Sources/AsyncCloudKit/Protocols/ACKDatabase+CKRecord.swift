@@ -1,15 +1,14 @@
 //
-//  CCKDatabase+CKRecord.swift
-//  CombineCloudKit
+//  ACKDatabase+CKRecord.swift
+//  AsyncCloudKit
 //
-//  Created by Chris Araman on 2/16/21.
+//  Created by Chris Araman on 12/17/21.
 //  Copyright © 2021 Chris Araman. All rights reserved.
 //
 
 import CloudKit
-import Combine
 
-extension CCKDatabase {
+extension ACKDatabase {
   /// Saves a single record.
   ///
   /// - Parameters:
@@ -18,20 +17,20 @@ extension CCKDatabase {
   ///     the operation will use a default configuration.
   ///   - savePolicy: The policy to apply when the server contains a newer version of a specific record.
   ///   - clientChangeTokenData: A token that tracks local changes to records.
-  /// - Returns: A [`Publisher`](https://developer.apple.com/documentation/combine/publisher) that emits the saved
-  /// [`CKRecord`](https://developer.apple.com/documentation/cloudkit/ckrecord), or an error if CombineCloudKit can't save it.
+  /// - Returns: The saved [`CKRecord`](https://developer.apple.com/documentation/cloudkit/ckrecord).
   /// - SeeAlso: [`CKModifyRecordsOperation`](https://developer.apple.com/documentation/cloudkit/ckmodifyrecordsoperation)
   public func save(
     record: CKRecord,
     withConfiguration configuration: CKOperation.Configuration? = nil,
     savePolicy: CKModifyRecordsOperation.RecordSavePolicy = .ifServerRecordUnchanged,
     clientChangeTokenData: Data? = nil
-  ) -> AnyPublisher<CKRecord, Error> {
-    save(
+  ) async throws -> CKRecord {
+    try await save(
       records: [record],
       withConfiguration: configuration,
       savePolicy: savePolicy,
-      clientChangeTokenData: clientChangeTokenData)
+      clientChangeTokenData: clientChangeTokenData
+    ).single()
   }
 
   /// Saves multiple records.
@@ -44,8 +43,8 @@ extension CCKDatabase {
   ///     the operation will use a default configuration.
   ///   - savePolicy: The policy to apply when the server contains a newer version of a specific record.
   ///   - clientChangeTokenData: A token that tracks local changes to records.
-  /// - Returns: A [`Publisher`](https://developer.apple.com/documentation/combine/publisher) that emits the saved
-  /// [`CKRecord`](https://developer.apple.com/documentation/cloudkit/ckrecord)s, or an error if CombineCloudKit can't save them.
+  /// - Returns: An ``AsyncCloudKitSequence`` that emits the saved
+  /// [`CKRecord`](https://developer.apple.com/documentation/cloudkit/ckrecord)s.
   /// - SeeAlso: [`CKModifyRecordsOperation`](https://developer.apple.com/documentation/cloudkit/ckmodifyrecordsoperation)
   public func save(
     records: [CKRecord],
@@ -53,7 +52,7 @@ extension CCKDatabase {
     withConfiguration configuration: CKOperation.Configuration? = nil,
     savePolicy: CKModifyRecordsOperation.RecordSavePolicy = .ifServerRecordUnchanged,
     clientChangeTokenData: Data? = nil
-  ) -> AnyPublisher<CKRecord, Error> {
+  ) -> AsyncCloudKitSequence<CKRecord> {
     modify(
       recordsToSave: records,
       recordIDsToDelete: nil,
@@ -63,7 +62,7 @@ extension CCKDatabase {
       clientChangeTokenData: clientChangeTokenData
     ).compactMap { saved, _ in
       saved
-    }.eraseToAnyPublisher()
+    }.eraseToAsyncCloudKitSequence()
   }
 
   /// Saves a single record.
@@ -72,14 +71,12 @@ extension CCKDatabase {
   ///   - record: The record to save to the database.
   ///   - configuration: The configuration to use for the underlying operation. If you don't specify a configuration,
   ///     the operation will use a default configuration.
-  /// - Note: CombineCloudKit executes the save with a low priority. Use this method when you don’t require the save to
+  /// - Note: AsyncCloudKit executes the save with a low priority. Use this method when you don’t require the save to
   /// happen immediately.
-  /// - Returns: A [`Publisher`](https://developer.apple.com/documentation/combine/publisher) that emits the saved
-  /// [`CKRecord`](https://developer.apple.com/documentation/cloudkit/ckrecord), or an error if CombineCloudKit can't save it.
-  /// The publisher ignores requests for cooperative cancellation.
+  /// - Returns: The saved [`CKRecord`](https://developer.apple.com/documentation/cloudkit/ckrecord).
   /// - SeeAlso: [`save`](https://developer.apple.com/documentation/cloudkit/ckdatabase/1449114-save)
-  public func saveAtBackgroundPriority(record: CKRecord) -> AnyPublisher<CKRecord, Error> {
-    publisherAtBackgroundPriorityFrom(save, with: record)
+  public func saveAtBackgroundPriority(record: CKRecord) async throws -> CKRecord {
+    try await asyncAtBackgroundPriorityFrom(save, with: record)
   }
 
   /// Saves a single record.
@@ -90,15 +87,15 @@ extension CCKDatabase {
   ///     the operation will use a default configuration.
   ///   - savePolicy: The policy to apply when the server contains a newer version of a specific record.
   ///   - clientChangeTokenData: A token that tracks local changes to records.
-  /// - Returns: A [`Publisher`](https://developer.apple.com/documentation/combine/publisher) that emits the ``Progress`` of the saved
-  /// [`CKRecord`](https://developer.apple.com/documentation/cloudkit/ckrecord), or an error if CombineCloudKit can't save it.
+  /// - Returns: An ``AsyncCloudKitSequence`` that emits the ``Progress`` of the saved
+  /// [`CKRecord`](https://developer.apple.com/documentation/cloudkit/ckrecord).
   /// - SeeAlso: [`CKModifyRecordsOperation`](https://developer.apple.com/documentation/cloudkit/ckmodifyrecordsoperation)
   public func saveWithProgress(
     record: CKRecord,
     withConfiguration configuration: CKOperation.Configuration? = nil,
     savePolicy: CKModifyRecordsOperation.RecordSavePolicy = .ifServerRecordUnchanged,
     clientChangeTokenData: Data? = nil
-  ) -> AnyPublisher<(CKRecord, Progress), Error> {
+  ) -> AsyncCloudKitSequence<(CKRecord, Progress)> {
     saveWithProgress(
       records: [record],
       withConfiguration: configuration,
@@ -116,8 +113,8 @@ extension CCKDatabase {
   ///     the operation will use a default configuration.
   ///   - savePolicy: The policy to apply when the server contains a newer version of a specific record.
   ///   - clientChangeTokenData: A token that tracks local changes to records.
-  /// - Returns: A [`Publisher`](https://developer.apple.com/documentation/combine/publisher) that emits the ``Progress`` of the saved
-  /// [`CKRecord`](https://developer.apple.com/documentation/cloudkit/ckrecord)s, or an error if CombineCloudKit can't save them.
+  /// - Returns: An ``AsyncCloudKitSequence`` that emits the ``Progress`` of the saved
+  /// [`CKRecord`](https://developer.apple.com/documentation/cloudkit/ckrecord)s.
   /// - SeeAlso: [`CKModifyRecordsOperation`](https://developer.apple.com/documentation/cloudkit/ckmodifyrecordsoperation)
   public func saveWithProgress(
     records: [CKRecord],
@@ -125,7 +122,7 @@ extension CCKDatabase {
     withConfiguration configuration: CKOperation.Configuration? = nil,
     savePolicy: CKModifyRecordsOperation.RecordSavePolicy = .ifServerRecordUnchanged,
     clientChangeTokenData: Data? = nil
-  ) -> AnyPublisher<(CKRecord, Progress), Error> {
+  ) -> AsyncCloudKitSequence<(CKRecord, Progress)> {
     modifyWithProgress(
       recordsToSave: records,
       recordIDsToDelete: nil,
@@ -135,7 +132,7 @@ extension CCKDatabase {
       clientChangeTokenData: clientChangeTokenData
     ).compactMap { progress, _ in
       progress
-    }.eraseToAnyPublisher()
+    }.eraseToAsyncCloudKitSequence()
   }
 
   /// Deletes a single record.
@@ -144,15 +141,16 @@ extension CCKDatabase {
   ///   - recordID: The ID of the record to delete permanently from the database.
   ///   - configuration: The configuration to use for the underlying operation. If you don't specify a configuration,
   ///     the operation will use a default configuration.
-  /// - Returns: A [`Publisher`](https://developer.apple.com/documentation/combine/publisher) that emits the deleted
-  /// [`CKRecord.ID`](https://developer.apple.com/documentation/cloudkit/ckrecord/id), or an error if CombineCloudKit can't delete
-  /// it.
+  /// - Returns: The deleted [`CKRecord.ID`](https://developer.apple.com/documentation/cloudkit/ckrecord/id).
   /// - SeeAlso: [`CKModifyRecordsOperation`](https://developer.apple.com/documentation/cloudkit/ckmodifyrecordsoperation)
   public func delete(
     recordID: CKRecord.ID,
     withConfiguration configuration: CKOperation.Configuration? = nil
-  ) -> AnyPublisher<CKRecord.ID, Error> {
-    delete(recordIDs: [recordID], withConfiguration: configuration)
+  ) async throws -> CKRecord.ID {
+    try await delete(
+      recordIDs: [recordID],
+      withConfiguration: configuration
+    ).single()
   }
 
   /// Deletes multiple records.
@@ -163,15 +161,14 @@ extension CCKDatabase {
   ///     more records in a record zone.
   ///   - configuration: The configuration to use for the underlying operation. If you don't specify a configuration,
   ///     the operation will use a default configuration.
-  /// - Returns: A [`Publisher`](https://developer.apple.com/documentation/combine/publisher) that emits the deleted
-  /// [`CKRecord.ID`](https://developer.apple.com/documentation/cloudkit/ckrecord/id)s, or an error if CombineCloudKit can't delete
-  /// them.
+  /// - Returns: An ``AsyncCloudKitSequence`` that emits the deleted
+  /// [`CKRecord.ID`](https://developer.apple.com/documentation/cloudkit/ckrecord/id)s.
   /// - SeeAlso: [`CKModifyRecordsOperation`](https://developer.apple.com/documentation/cloudkit/ckmodifyrecordsoperation)
   public func delete(
     recordIDs: [CKRecord.ID],
     atomically isAtomic: Bool = true,
     withConfiguration configuration: CKOperation.Configuration? = nil
-  ) -> AnyPublisher<CKRecord.ID, Error> {
+  ) -> AsyncCloudKitSequence<CKRecord.ID> {
     modify(
       recordsToSave: nil,
       recordIDsToDelete: recordIDs,
@@ -179,23 +176,19 @@ extension CCKDatabase {
       withConfiguration: configuration
     ).compactMap { _, deleted in
       deleted
-    }.eraseToAnyPublisher()
+    }.eraseToAsyncCloudKitSequence()
   }
 
   /// Deletes a single record.
   ///
   /// - Parameters:
   ///   - recordID: The ID of the record to delete permanently from the database.
-  /// - Note: CombineCloudKit executes the delete with a low priority. Use this method when you don’t require the delete
+  /// - Note: AsyncCloudKit executes the delete with a low priority. Use this method when you don’t require the delete
   /// to happen immediately.
-  /// - Returns: A [`Publisher`](https://developer.apple.com/documentation/combine/publisher) that emits the deleted
-  /// [`CKRecord.ID`](https://developer.apple.com/documentation/cloudkit/ckrecord/id), or an error if CombineCloudKit can't delete it.
-  /// The publisher ignores requests for cooperative cancellation.
+  /// - Returns: The deleted [`CKRecord.ID`](https://developer.apple.com/documentation/cloudkit/ckrecord/id).
   /// - SeeAlso: [`delete`](https://developer.apple.com/documentation/cloudkit/ckdatabase/1449122-delete)
-  public func deleteAtBackgroundPriority(recordID: CKRecord.ID)
-    -> AnyPublisher<CKRecord.ID, Error>
-  {
-    publisherAtBackgroundPriorityFrom(delete, with: recordID)
+  public func deleteAtBackgroundPriority(recordID: CKRecord.ID) async throws -> CKRecord.ID {
+    try await asyncAtBackgroundPriorityFrom(delete, with: recordID)
   }
 
   /// Modifies one or more records.
@@ -209,7 +202,7 @@ extension CCKDatabase {
   ///     the operation will use a default configuration.
   ///   - savePolicy: The policy to apply when the server contains a newer version of a specific record.
   ///   - clientChangeTokenData: A token that tracks local changes to records.
-  /// - Returns: A [`Publisher`](https://developer.apple.com/documentation/combine/publisher) that emits the saved
+  /// - Returns: An ``AsyncCloudKitSequence`` that emits the saved
   /// [`CKRecord`](https://developer.apple.com/documentation/cloudkit/ckrecord)s and the deleted
   /// [`CKRecord.ID`](https://developer.apple.com/documentation/cloudkit/ckrecord/id)s.
   /// - SeeAlso: [`CKModifyRecordsOperation`](https://developer.apple.com/documentation/cloudkit/ckmodifyrecordsoperation)
@@ -220,7 +213,7 @@ extension CCKDatabase {
     withConfiguration configuration: CKOperation.Configuration? = nil,
     savePolicy: CKModifyRecordsOperation.RecordSavePolicy = .ifServerRecordUnchanged,
     clientChangeTokenData: Data? = nil
-  ) -> AnyPublisher<(CKRecord?, CKRecord.ID?), Error> {
+  ) -> AsyncCloudKitSequence<(CKRecord?, CKRecord.ID?)> {
     modifyWithProgress(
       recordsToSave: recordsToSave,
       recordIDsToDelete: recordIDsToDelete,
@@ -241,7 +234,7 @@ extension CCKDatabase {
       }
 
       return nil
-    }.eraseToAnyPublisher()
+    }.eraseToAsyncCloudKitSequence()
   }
 
   /// Modifies one or more records.
@@ -255,7 +248,7 @@ extension CCKDatabase {
   ///     the operation will use a default configuration.
   ///   - savePolicy: The policy to apply when the server contains a newer version of a specific record.
   ///   - clientChangeTokenData: A token that tracks local changes to records.
-  /// - Returns: A [`Publisher`](https://developer.apple.com/documentation/combine/publisher) that emits the ``Progress`` of the saved
+  /// - Returns: An ``AsyncCloudKitSequence`` that emits the ``Progress`` of the saved
   /// [`CKRecord`](https://developer.apple.com/documentation/cloudkit/ckrecord)s, and the deleted
   /// [`CKRecord.ID`](https://developer.apple.com/documentation/cloudkit/ckrecord/id)s.
   /// - SeeAlso: [`CKModifyRecordsOperation`](https://developer.apple.com/documentation/cloudkit/ckmodifyrecordsoperation)
@@ -266,53 +259,51 @@ extension CCKDatabase {
     withConfiguration configuration: CKOperation.Configuration? = nil,
     savePolicy: CKModifyRecordsOperation.RecordSavePolicy = .ifServerRecordUnchanged,
     clientChangeTokenData: Data? = nil
-  ) -> AnyPublisher<((CKRecord, Progress)?, CKRecord.ID?), Error> {
-    let subject = PassthroughSubject<((CKRecord, Progress)?, CKRecord.ID?), Error>()
-    let operation = operationFactory.createModifyRecordsOperation(
-      recordsToSave: recordsToSave, recordIDsToDelete: recordIDsToDelete
-    )
-    if configuration != nil {
-      operation.configuration = configuration
-    }
-    operation.savePolicy = savePolicy
-    operation.clientChangeTokenData = clientChangeTokenData
-    operation.isAtomic = isAtomic
-    operation.perRecordProgressBlock = { record, rawProgress in
-      let progress = Progress(rawValue: rawProgress)
-      if progress != .complete {
-        subject.send(((record, progress), nil))
+  ) -> AsyncCloudKitSequence<((CKRecord, Progress)?, CKRecord.ID?)> {
+    AsyncThrowingStream { continuation in
+      let operation = operationFactory.createModifyRecordsOperation(
+        recordsToSave: recordsToSave, recordIDsToDelete: recordIDsToDelete
+      )
+      if configuration != nil {
+        operation.configuration = configuration
       }
-    }
-    operation.perRecordCompletionBlock = { record, error in
-      guard error == nil else {
-        subject.send(completion: .failure(error!))
-        return
+      operation.savePolicy = savePolicy
+      operation.clientChangeTokenData = clientChangeTokenData
+      operation.isAtomic = isAtomic
+      continuation.onTermination = { @Sendable _ in
+        operation.cancel()
       }
-
-      subject.send(((record, .complete), nil))
-    }
-    operation.modifyRecordsCompletionBlock = { _, deletedRecordIDs, error in
-      guard error == nil else {
-        subject.send(completion: .failure(error!))
-        return
-      }
-
-      if let deletedRecordIDs = deletedRecordIDs {
-        for recordID in deletedRecordIDs {
-          subject.send((nil, recordID))
+      operation.perRecordProgressBlock = { record, rawProgress in
+        let progress = Progress(rawValue: rawProgress)
+        if progress != .complete {
+          continuation.yield(((record, progress), nil))
         }
       }
+      operation.perRecordCompletionBlock = { record, error in
+        guard error == nil else {
+          continuation.finish(throwing: error!)
+          return
+        }
 
-      subject.send(completion: .finished)
-    }
+        continuation.yield(((record, .complete), nil))
+      }
+      operation.modifyRecordsCompletionBlock = { _, deletedRecordIDs, error in
+        guard error == nil else {
+          continuation.finish(throwing: error!)
+          return
+        }
 
-    return Deferred { () -> PassthroughSubject<((CKRecord, Progress)?, CKRecord.ID?), Error> in
-      DispatchQueue.main.async {
-        self.add(operation)
+        if let deletedRecordIDs = deletedRecordIDs {
+          for recordID in deletedRecordIDs {
+            continuation.yield((nil, recordID))
+          }
+        }
+
+        continuation.finish()
       }
 
-      return subject
-    }.propagateCancellationTo(operation)
+      self.add(operation)
+    }.eraseToAsyncCloudKitSequence()
   }
 
   /// Fetches the record with the specified ID.
@@ -325,15 +316,18 @@ extension CCKDatabase {
   ///     the record’s keys.
   ///   - configuration: The configuration to use for the underlying operation. If you don't specify a configuration,
   ///     the operation will use a default configuration.
-  /// - Returns: A [`Publisher`](https://developer.apple.com/documentation/combine/publisher) that emits the fetched
-  /// [`CKRecord`](https://developer.apple.com/documentation/cloudkit/ckrecord), or an error if CombineCloudKit can't fetch it.
+  /// - Returns: The fetched [`CKRecord`](https://developer.apple.com/documentation/cloudkit/ckrecord).
   /// - SeeAlso: [CKFetchRecordsOperation](https://developer.apple.com/documentation/cloudkit/ckfetchrecordsoperation)
   public func fetch(
     recordID: CKRecord.ID,
     desiredKeys: [CKRecord.FieldKey]? = nil,
     withConfiguration configuration: CKOperation.Configuration? = nil
-  ) -> AnyPublisher<CKRecord, Error> {
-    fetch(recordIDs: [recordID], desiredKeys: desiredKeys, withConfiguration: configuration)
+  ) async throws -> CKRecord {
+    try await fetch(
+      recordIDs: [recordID],
+      desiredKeys: desiredKeys,
+      withConfiguration: configuration
+    ).single()
   }
 
   /// Fetches multiple records.
@@ -346,37 +340,33 @@ extension CCKDatabase {
   ///     a record’s keys.
   ///   - configuration: The configuration to use for the underlying operation. If you don't specify a configuration,
   ///     the operation will use a default configuration.
-  /// - Returns: A [`Publisher`](https://developer.apple.com/documentation/combine/publisher) that emits the fetched
-  /// [`CKRecord`](https://developer.apple.com/documentation/cloudkit/ckrecord)s, or an error if CombineCloudKit can't fetch them.
+  /// - Returns: An ``AsyncCloudKitSequence`` that emits the fetched
+  /// [`CKRecord`](https://developer.apple.com/documentation/cloudkit/ckrecord)s.
   /// - SeeAlso: [CKFetchRecordsOperation](https://developer.apple.com/documentation/cloudkit/ckfetchrecordsoperation)
   public func fetch(
     recordIDs: [CKRecord.ID],
     desiredKeys: [CKRecord.FieldKey]? = nil,
     withConfiguration configuration: CKOperation.Configuration? = nil
-  ) -> AnyPublisher<CKRecord, Error> {
+  ) -> AsyncCloudKitSequence<CKRecord> {
     fetchWithProgress(
       recordIDs: recordIDs,
       desiredKeys: desiredKeys,
       withConfiguration: configuration
     ).compactMap { _, record in
       record
-    }.eraseToAnyPublisher()
+    }.eraseToAsyncCloudKitSequence()
   }
 
   /// Fetches the record with the specified ID.
   ///
   /// - Parameters:
   ///   - recordID: The record ID of the record to fetch.
-  /// - Note: CombineCloudKit executes the fetch with a low priority. Use this method when you don’t require the record
+  /// - Note: AsyncCloudKit executes the fetch with a low priority. Use this method when you don’t require the record
   /// immediately.
-  /// - Returns: A [`Publisher`](https://developer.apple.com/documentation/combine/publisher) that emits the
-  /// [`CKRecord`](https://developer.apple.com/documentation/cloudkit/ckrecord), or an error if CombineCloudKit can't fetch it.
-  /// The publisher ignores requests for cooperative cancellation.
+  /// - Returns: The [`CKRecord`](https://developer.apple.com/documentation/cloudkit/ckrecord).
   /// - SeeAlso: [fetch](https://developer.apple.com/documentation/cloudkit/ckdatabase/1449126-fetch)
-  public func fetchAtBackgroundPriority(
-    withRecordID recordID: CKRecord.ID
-  ) -> AnyPublisher<CKRecord, Error> {
-    publisherAtBackgroundPriorityFrom(fetch, with: recordID)
+  public func fetchAtBackgroundPriority(withRecordID recordID: CKRecord.ID) async throws -> CKRecord {
+    try await asyncAtBackgroundPriorityFrom(fetch, with: recordID)
   }
 
   /// Fetches the record with the specified ID.
@@ -389,15 +379,14 @@ extension CCKDatabase {
   ///     the record’s keys.
   ///   - configuration: The configuration to use for the underlying operation. If you don't specify a configuration,
   ///     the operation will use a default configuration.
-  /// - Returns: A [`Publisher`](https://developer.apple.com/documentation/combine/publisher) that emits ``Progress`` and the fetched
-  /// [`CKRecord`](https://developer.apple.com/documentation/cloudkit/ckrecord) on completion, or an error if
-  ///   CombineCloudKit can't fetch it.
+  /// - Returns: An ``AsyncCloudKitSequence`` that emits ``Progress`` and the fetched
+  /// [`CKRecord`](https://developer.apple.com/documentation/cloudkit/ckrecord) on completion.
   /// - SeeAlso: [CKFetchRecordsOperation](https://developer.apple.com/documentation/cloudkit/ckfetchrecordsoperation)
   public func fetchWithProgress(
     recordID: CKRecord.ID,
     desiredKeys: [CKRecord.FieldKey]? = nil,
     withConfiguration configuration: CKOperation.Configuration? = nil
-  ) -> AnyPublisher<((CKRecord.ID, Progress)?, CKRecord?), Error> {
+  ) -> AsyncCloudKitSequence<((CKRecord.ID, Progress)?, CKRecord?)> {
     fetchWithProgress(
       recordIDs: [recordID],
       desiredKeys: desiredKeys,
@@ -415,51 +404,48 @@ extension CCKDatabase {
   ///     a record’s keys.
   ///   - configuration: The configuration to use for the underlying operation. If you don't specify a configuration,
   ///     the operation will use a default configuration.
-  /// - Returns: A [`Publisher`](https://developer.apple.com/documentation/combine/publisher) that emits the ``Progress`` of the fetched
+  /// - Returns: An ``AsyncCloudKitSequence`` that emits the ``Progress`` of the fetched
   /// [`CKRecord.ID`](https://developer.apple.com/documentation/cloudkit/ckrecord/id)s and the fetched
-  /// [`CKRecord`](https://developer.apple.com/documentation/cloudkit/ckrecord)s, or an error if
-  ///   CombineCloudKit can't fetch them.
+  /// [`CKRecord`](https://developer.apple.com/documentation/cloudkit/ckrecord)s.
   /// - SeeAlso: [CKFetchRecordsOperation](https://developer.apple.com/documentation/cloudkit/ckfetchrecordsoperation)
   public func fetchWithProgress(
     recordIDs: [CKRecord.ID],
     desiredKeys: [CKRecord.FieldKey]? = nil,
     withConfiguration configuration: CKOperation.Configuration? = nil
-  ) -> AnyPublisher<((CKRecord.ID, Progress)?, CKRecord?), Error> {
-    let subject = PassthroughSubject<((CKRecord.ID, Progress)?, CKRecord?), Error>()
-    let operation = operationFactory.createFetchRecordsOperation(recordIDs: recordIDs)
-    if configuration != nil {
-      operation.configuration = configuration
-    }
-    operation.desiredKeys = desiredKeys
-    operation.perRecordProgressBlock = { recordID, rawProgress in
-      let progress = Progress(rawValue: rawProgress)
-      subject.send(((recordID, progress), nil))
-    }
-    operation.perRecordCompletionBlock = { record, _, error in
-      guard let record = record, error == nil else {
-        subject.send(completion: .failure(error!))
-        return
+  ) -> AsyncCloudKitSequence<((CKRecord.ID, Progress)?, CKRecord?)> {
+    AsyncThrowingStream { continuation in
+      let operation = operationFactory.createFetchRecordsOperation(recordIDs: recordIDs)
+      if configuration != nil {
+        operation.configuration = configuration
+      }
+      operation.desiredKeys = desiredKeys
+      continuation.onTermination = { @Sendable _ in
+        operation.cancel()
+      }
+      operation.perRecordProgressBlock = { recordID, rawProgress in
+        let progress = Progress(rawValue: rawProgress)
+        continuation.yield(((recordID, progress), nil))
+      }
+      operation.perRecordCompletionBlock = { record, _, error in
+        guard let record = record, error == nil else {
+          continuation.finish(throwing: error!)
+          return
+        }
+
+        continuation.yield((nil, record))
+      }
+      operation.fetchRecordsCompletionBlock = { _, error in
+        guard error == nil else {
+          continuation.finish(throwing: error!)
+          return
+        }
+
+        continuation.finish()
       }
 
-      subject.send((nil, record))
-    }
-    operation.fetchRecordsCompletionBlock = { _, error in
-      guard error == nil else {
-        subject.send(completion: .failure(error!))
-        return
-      }
-
-      subject.send(completion: .finished)
-    }
-
-    // TODO: Ensure we only add the operation once, for every place we do a deferred add.
-    return Deferred { () -> PassthroughSubject<((CKRecord.ID, Progress)?, CKRecord?), Error> in
-      DispatchQueue.main.async {
-        self.add(operation)
-      }
-
-      return subject
-    }.propagateCancellationTo(operation)
+      // TODO: Ensure we only add the operation once, for every place we create an AsyncThrowingStream.
+      self.add(operation)
+    }.eraseToAsyncCloudKitSequence()
   }
 
   /// Fetches the current user record.
@@ -471,19 +457,18 @@ extension CCKDatabase {
   ///     the record’s keys.
   ///   - configuration: The configuration to use for the underlying operation. If you don't specify a configuration,
   ///     the operation will use a default configuration.
-  /// - Returns: A [`Publisher`](https://developer.apple.com/documentation/combine/publisher) that emits the
-  /// [`CKRecord`](https://developer.apple.com/documentation/cloudkit/ckrecord), or an error if CombineCloudKit can't fetch it.
+  /// - Returns: The [`CKRecord`](https://developer.apple.com/documentation/cloudkit/ckrecord).
   /// - SeeAlso:
   /// [fetchCurrentUserRecordOperation]
   /// (https://developer.apple.com/documentation/cloudkit/ckfetchrecordsoperation/1476070-fetchcurrentuserrecordoperation)
   public func fetchCurrentUserRecord(
     desiredKeys _: [CKRecord.FieldKey]? = nil,
     withConfiguration configuration: CKOperation.Configuration? = nil
-  ) -> AnyPublisher<CKRecord, Error> {
+  ) async throws -> CKRecord {
     let operation = operationFactory.createFetchCurrentUserRecordOperation()
-    return publisherFromFetch(operation, configuration) { completion in
+    return try await asyncFromFetch(operation, configuration) { completion in
       operation.fetchRecordsCompletionBlock = completion
-    }
+    }.single()
   }
 
   /// Fetches records that match the specified query.
@@ -501,8 +486,8 @@ extension CCKDatabase {
   ///     a record’s keys.
   ///   - configuration: The configuration to use for the underlying operation. If you don't specify a configuration,
   ///     the operation will use a default configuration.
-  /// - Returns: A [`Publisher`](https://developer.apple.com/documentation/combine/publisher) that emits any matching
-  /// [`CKRecord`](https://developer.apple.com/documentation/cloudkit/ckrecord)s, or an error if CombineCloudKit can't perform the query.
+  /// - Returns: An ``AsyncCloudKitSequence`` that emits any matching
+  /// [`CKRecord`](https://developer.apple.com/documentation/cloudkit/ckrecord)s.
   /// - SeeAlso: [CKQuery](https://developer.apple.com/documentation/cloudkit/ckquery)
   /// - SeeAlso: [CKQueryOperation](https://developer.apple.com/documentation/cloudkit/ckqueryoperation)
   /// - SeeAlso: [NSPredicate](https://developer.apple.com/documentation/foundation/nspredicate)
@@ -514,7 +499,7 @@ extension CCKDatabase {
     inZoneWith zoneID: CKRecordZone.ID? = nil,
     desiredKeys: [CKRecord.FieldKey]? = nil,
     withConfiguration configuration: CKOperation.Configuration? = nil
-  ) -> AnyPublisher<CKRecord, Error> {
+  ) -> AsyncCloudKitSequence<CKRecord> {
     let query = CKQuery(recordType: recordType, predicate: predicate)
     query.sortDescriptors = sortDescriptors
     return perform(
@@ -538,8 +523,9 @@ extension CCKDatabase {
   ///     a record’s keys.
   ///   - configuration: The configuration to use for the underlying operation. If you don't specify a configuration,
   ///     the operation will use a default configuration.
-  /// - Returns: A [`Publisher`](https://developer.apple.com/documentation/combine/publisher) that emits any matching
-  /// [`CKRecord`](https://developer.apple.com/documentation/cloudkit/ckrecord)s, or an error if CombineCloudKit can't perform the query.
+  ///   - resultsLimit: The maximum number of records to buffer at a time.
+  /// - Returns: An ``AsyncCloudKitSequence`` that emits any matching
+  /// [`CKRecord`](https://developer.apple.com/documentation/cloudkit/ckrecord)s.
   /// - SeeAlso: [CKQuery](https://developer.apple.com/documentation/cloudkit/ckquery)
   /// - SeeAlso: [CKQueryOperation](https://developer.apple.com/documentation/cloudkit/ckqueryoperation)
   /// - SeeAlso: [NSPredicate](https://developer.apple.com/documentation/foundation/nspredicate)
@@ -548,8 +534,54 @@ extension CCKDatabase {
     _ query: CKQuery,
     inZoneWith zoneID: CKRecordZone.ID? = nil,
     desiredKeys: [CKRecord.FieldKey]? = nil,
-    withConfiguration configuration: CKOperation.Configuration? = nil
-  ) -> AnyPublisher<CKRecord, Error> {
-    QueryPublisher(database: self, query, zoneID, desiredKeys, configuration).eraseToAnyPublisher()
+    withConfiguration configuration: CKOperation.Configuration? = nil,
+    resultsLimit: Int = CKQueryOperation.maximumResults
+  ) -> AsyncCloudKitSequence<CKRecord> {
+    var operation = operationFactory.createQueryOperation()
+    operation.query = query
+    return AsyncThrowingStream { continuation in
+      func addOperation() {
+        operation.desiredKeys = desiredKeys
+        operation.zoneID = zoneID
+        operation.resultsLimit = resultsLimit
+
+        if configuration != nil {
+          operation.configuration = configuration
+        }
+
+        operation.recordFetchedBlock = { record in
+          continuation.yield(record)
+        }
+
+        operation.queryCompletionBlock = { cursor, error in
+          guard error == nil else {
+            continuation.finish(throwing: error!)
+            return
+          }
+
+          guard let cursor = cursor else {
+            // We've fetched all the results.
+            continuation.finish()
+            return
+          }
+
+          // Prepare to fetch the next page of results.
+          operation = operationFactory.createQueryOperation()
+          operation.cursor = cursor
+          addOperation()
+        }
+
+        let onTermination = {
+          operation.cancel()
+        }
+        continuation.onTermination = { @Sendable _ in
+          onTermination()
+        }
+
+        self.add(operation)
+      }
+
+      addOperation()
+    }.eraseToAsyncCloudKitSequence()
   }
 }

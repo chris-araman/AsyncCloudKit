@@ -15,6 +15,10 @@ let package = Package(
   ],
   products: [
     .library(
+      name: "AsyncCloudKit",
+      targets: ["AsyncCloudKit"]
+    ),
+    .library(
       name: "CombineCloudKit",
       targets: ["CombineCloudKit"]
     )
@@ -24,7 +28,9 @@ let package = Package(
     .package(url: "https://github.com/apple/swift-format.git", .branch("swift-5.5-branch"))
   ],
   targets: [
+    .target(name: "AsyncCloudKit"),
     .target(name: "CombineCloudKit"),
+    // TODO: Add AsyncCloudKitTests.
     .testTarget(
       name: "CombineCloudKitTests",
       dependencies: ["CombineCloudKit"]

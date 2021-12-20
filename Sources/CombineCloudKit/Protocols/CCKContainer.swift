@@ -61,10 +61,4 @@ extension CCKContainer {
   public func accountStatus() -> AnyPublisher<CKAccountStatus, Error> {
     publisherFrom(accountStatus)
   }
-
-#if compiler(>=5.5.2)
-  public func accountStatus() async throws -> CKAccountStatus {
-    try await accountStatus().values.single()
-  }
-#endif
 }

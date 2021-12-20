@@ -1,29 +1,24 @@
 //
-//  CCKDatabase+CKRecordZone.swift
-//  CombineCloudKit
+//  ACKDatabase+CKRecordZone.swift
+//  AsyncCloudKit
 //
-//  Created by Chris Araman on 2/16/21.
+//  Created by Chris Araman on 12/17/21.
 //  Copyright © 2021 Chris Araman. All rights reserved.
 //
 
 import CloudKit
-import Combine
 
-extension CCKDatabase {
+extension ACKDatabase {
   /// Saves a single record zone.
   ///
   /// - Parameters:
   ///   - recordZone: The record zone to save.
-  /// - Note: CombineCloudKit executes the save with a low priority. Use this method when you don’t require the save to
+  /// - Note: AsyncCloudKit executes the save with a low priority. Use this method when you don’t require the save to
   /// happen immediately.
-  /// - Returns: A [`Publisher`](https://developer.apple.com/documentation/combine/publisher) that emits the saved
-  /// [`CKRecordZone`](https://developer.apple.com/documentation/cloudkit/ckrecordzone), or an error if CombineCloudKit can't save it.
-  /// The publisher ignores requests for cooperative cancellation.
+  /// - Returns: The saved [`CKRecordZone`](https://developer.apple.com/documentation/cloudkit/ckrecordzone).
   /// - SeeAlso: [`save`](https://developer.apple.com/documentation/cloudkit/ckdatabase/1449108-save)
-  public func saveAtBackgroundPriority(
-    recordZone: CKRecordZone
-  ) -> AnyPublisher<CKRecordZone, Error> {
-    publisherAtBackgroundPriorityFrom(save, with: recordZone)
+  public func saveAtBackgroundPriority(recordZone: CKRecordZone) async throws -> CKRecordZone {
+    try await asyncAtBackgroundPriorityFrom(save, with: recordZone)
   }
 
   /// Saves a single record zone.
@@ -32,15 +27,18 @@ extension CCKDatabase {
   ///   - recordZone: The record zone to save.
   ///   - configuration: The configuration to use for the underlying operation. If you don't specify a configuration,
   ///     the operation will use a default configuration.
-  /// - Returns: A [`Publisher`](https://developer.apple.com/documentation/combine/publisher) that emits the saved
-  /// [`CKRecordZone`](https://developer.apple.com/documentation/cloudkit/ckrecordzone), or an error if CombineCloudKit can't save it.
+  /// - Returns: The saved [`CKRecordZone`](https://developer.apple.com/documentation/cloudkit/ckrecordzone).
   /// - SeeAlso: [`CKModifyRecordZonesOperation`](https://developer.apple.com/documentation/cloudkit/ckmodifyrecordzonesoperation)
   public func save(
     recordZone: CKRecordZone,
     withConfiguration configuration: CKOperation.Configuration? = nil
-  ) -> AnyPublisher<CKRecordZone, Error> {
-    save(recordZones: [recordZone], withConfiguration: configuration)
+  ) async throws -> CKRecordZone {
+    try await save(
+      recordZones: [recordZone],
+      withConfiguration: configuration
+    ).single()
   }
+
 
   /// Saves multiple record zones.
   ///
@@ -48,33 +46,29 @@ extension CCKDatabase {
   ///   - recordZones: The record zones to save.
   ///   - configuration: The configuration to use for the underlying operation. If you don't specify a configuration,
   ///     the operation will use a default configuration.
-  /// - Returns: A [`Publisher`](https://developer.apple.com/documentation/combine/publisher) that emits the saved
-  /// [`CKRecordZone`](https://developer.apple.com/documentation/cloudkit/ckrecordzone)s, or an error if CombineCloudKit can't save them.
+  /// - Returns: An ``AsyncCloudKitSequence`` that emits the saved
+  /// [`CKRecordZone`](https://developer.apple.com/documentation/cloudkit/ckrecordzone)s.
   /// - SeeAlso: [`CKModifyRecordZonesOperation`](https://developer.apple.com/documentation/cloudkit/ckmodifyrecordzonesoperation)
   public func save(
     recordZones: [CKRecordZone],
     withConfiguration configuration: CKOperation.Configuration? = nil
-  ) -> AnyPublisher<CKRecordZone, Error> {
+  ) -> AsyncCloudKitSequence<CKRecordZone> {
     modify(recordZonesToSave: recordZones, withConfiguration: configuration).compactMap {
       saved, _ in
       saved
-    }.eraseToAnyPublisher()
+    }.eraseToAsyncCloudKitSequence()
   }
 
   /// Deletes a single record zone.
   ///
   /// - Parameters:
   ///   - recordZoneID: The ID of the record zone to delete.
-  /// - Note: CombineCloudKit executes the delete with a low priority. Use this method when you don’t require the delete
+  /// - Note: AsyncCloudKit executes the delete with a low priority. Use this method when you don’t require the delete
   /// to happen immediately.
-  /// - Returns: A [`Publisher`](https://developer.apple.com/documentation/combine/publisher) that emits the deleted
-  /// [`CKRecordZone.ID`](https://developer.apple.com/documentation/cloudkit/ckrecordzone/id), or an error if CombineCloudKit can't delete it.
-  /// The publisher ignores requests for cooperative cancellation.
+  /// - Returns: The deleted [`CKRecordZone.ID`](https://developer.apple.com/documentation/cloudkit/ckrecordzone/id).
   /// - SeeAlso: [`delete`](https://developer.apple.com/documentation/cloudkit/ckdatabase/1449118-delete)
-  public func deleteAtBackgroundPriority(
-    recordZoneID: CKRecordZone.ID
-  ) -> AnyPublisher<CKRecordZone.ID, Error> {
-    publisherAtBackgroundPriorityFrom(delete, with: recordZoneID)
+  public func deleteAtBackgroundPriority(recordZoneID: CKRecordZone.ID) async throws -> CKRecordZone.ID {
+    try await asyncAtBackgroundPriorityFrom(delete, with: recordZoneID)
   }
 
   /// Deletes a single record zone.
@@ -83,15 +77,16 @@ extension CCKDatabase {
   ///   - recordZoneID: The ID of the record zone to delete.
   ///   - configuration: The configuration to use for the underlying operation. If you don't specify a configuration,
   ///     the operation will use a default configuration.
-  /// - Returns: A [`Publisher`](https://developer.apple.com/documentation/combine/publisher) that emits the deleted
-  /// [`CKRecordZone.ID`](https://developer.apple.com/documentation/cloudkit/ckrecordzone/id), or an error if CombineCloudKit can't delete
-  /// it.
+  /// - Returns: The deleted [`CKRecordZone.ID`](https://developer.apple.com/documentation/cloudkit/ckrecordzone/id).
   /// - SeeAlso: [`CKModifyRecordZonesOperation`](https://developer.apple.com/documentation/cloudkit/ckmodifyrecordzonesoperation)
   public func delete(
     recordZoneID: CKRecordZone.ID,
     withConfiguration configuration: CKOperation.Configuration? = nil
-  ) -> AnyPublisher<CKRecordZone.ID, Error> {
-    delete(recordZoneIDs: [recordZoneID], withConfiguration: configuration)
+  ) async throws -> CKRecordZone.ID {
+    try await delete(
+      recordZoneIDs: [recordZoneID],
+      withConfiguration: configuration
+    ).single()
   }
 
   /// Deletes multiple record zones.
@@ -100,18 +95,17 @@ extension CCKDatabase {
   ///   - recordZoneIDs: The IDs of the record zones to delete.
   ///   - configuration: The configuration to use for the underlying operation. If you don't specify a configuration,
   ///     the operation will use a default configuration.
-  /// - Returns: A [`Publisher`](https://developer.apple.com/documentation/combine/publisher) that emits the deleted
-  /// [`CKRecordZone.ID`](https://developer.apple.com/documentation/cloudkit/ckrecordzone/id)s, or an error if CombineCloudKit can't delete
-  /// them.
+  /// - Returns: An ``AsyncCloudKitSequence`` that emits the deleted
+  /// [`CKRecordZone.ID`](https://developer.apple.com/documentation/cloudkit/ckrecordzone/id)s.
   /// - SeeAlso: [`CKModifyRecordZonesOperation`](https://developer.apple.com/documentation/cloudkit/ckmodifyrecordzonesoperation)
   public func delete(
     recordZoneIDs: [CKRecordZone.ID],
     withConfiguration configuration: CKOperation.Configuration? = nil
-  ) -> AnyPublisher<CKRecordZone.ID, Error> {
+  ) -> AsyncCloudKitSequence<CKRecordZone.ID> {
     modify(recordZoneIDsToDelete: recordZoneIDs, withConfiguration: configuration).compactMap {
       _, deleted in
       deleted
-    }.eraseToAnyPublisher()
+    }.eraseToAsyncCloudKitSequence()
   }
 
   /// Modifies one or more record zones.
@@ -121,21 +115,20 @@ extension CCKDatabase {
   ///   - recordZonesToDelete: The IDs of the record zones to delete.
   ///   - configuration: The configuration to use for the underlying operation. If you don't specify a configuration,
   ///     the operation will use a default configuration.
-  /// - Returns: A [`Publisher`](https://developer.apple.com/documentation/combine/publisher) that emits the saved
+  /// - Returns: An ``AsyncCloudKitSequence`` that emits the saved
   /// [`CKRecordZone`](https://developer.apple.com/documentation/cloudkit/ckrecordzone)s and the deleted
-  /// [`CKRecordZone.ID`](https://developer.apple.com/documentation/cloudkit/ckrecordzone/id)s, or an
-  ///   error if CombineCloudKit can't modify them.
+  /// [`CKRecordZone.ID`](https://developer.apple.com/documentation/cloudkit/ckrecordzone/id)s.
   /// - SeeAlso: [`CKModifyRecordZonesOperation`](https://developer.apple.com/documentation/cloudkit/ckmodifyrecordzonesoperation)
   public func modify(
     recordZonesToSave: [CKRecordZone]? = nil,
     recordZoneIDsToDelete: [CKRecordZone.ID]? = nil,
     withConfiguration configuration: CKOperation.Configuration? = nil
-  ) -> AnyPublisher<(CKRecordZone?, CKRecordZone.ID?), Error> {
+  ) -> AsyncCloudKitSequence<(CKRecordZone?, CKRecordZone.ID?)> {
     let operation = operationFactory.createModifyRecordZonesOperation(
       recordZonesToSave: recordZonesToSave,
       recordZoneIDsToDelete: recordZoneIDsToDelete
     )
-    return publisherFromModify(operation, configuration) { completion in
+    return asyncFromModify(operation, configuration) { completion in
       operation.modifyRecordZonesCompletionBlock = completion
     }
   }
@@ -144,16 +137,12 @@ extension CCKDatabase {
   ///
   /// - Parameters:
   ///   - recordZoneID: The ID of the record zone to fetch.
-  /// - Note: CombineCloudKit executes the fetch with a low priority. Use this method when you don’t require the record
+  /// - Note: AsyncCloudKit executes the fetch with a low priority. Use this method when you don’t require the record
   /// zone immediately.
-  /// - Returns: A [`Publisher`](https://developer.apple.com/documentation/combine/publisher) that emits the
-  /// [`CKRecordZone`](https://developer.apple.com/documentation/cloudkit/ckrecordzone), or an error if CombineCloudKit can't fetch it.
-  /// The publisher ignores requests for cooperative cancellation.
+  /// - Returns: The [`CKRecordZone`](https://developer.apple.com/documentation/cloudkit/ckrecordzone).
   /// - SeeAlso: [fetch](https://developer.apple.com/documentation/cloudkit/ckdatabase/1449104-fetch)
-  public func fetchAtBackgroundPriority(
-    withRecordZoneID recordZoneID: CKRecordZone.ID
-  ) -> AnyPublisher<CKRecordZone, Error> {
-    publisherAtBackgroundPriorityFrom(fetch, with: recordZoneID)
+  public func fetchAtBackgroundPriority(withRecordZoneID recordZoneID: CKRecordZone.ID) async throws -> CKRecordZone {
+    try await asyncAtBackgroundPriorityFrom(fetch, with: recordZoneID)
   }
 
   /// Fetches the record zone with the specified ID.
@@ -162,14 +151,16 @@ extension CCKDatabase {
   ///   - recordZoneID: The ID of the record zone to fetch.
   ///   - configuration: The configuration to use for the underlying operation. If you don't specify a configuration,
   ///     the operation will use a default configuration.
-  /// - Returns: A [`Publisher`](https://developer.apple.com/documentation/combine/publisher) that emits the
-  /// [`CKRecordZone`](https://developer.apple.com/documentation/cloudkit/ckrecordzone), or an error if CombineCloudKit can't fetch it.
+  /// - Returns: The [`CKRecordZone`](https://developer.apple.com/documentation/cloudkit/ckrecordzone).
   /// - SeeAlso: [CKFetchRecordZonesOperation](https://developer.apple.com/documentation/cloudkit/ckfetchrecordzonesoperation)
   public func fetch(
     recordZoneID: CKRecordZone.ID,
     withConfiguration configuration: CKOperation.Configuration? = nil
-  ) -> AnyPublisher<CKRecordZone, Error> {
-    fetch(recordZoneIDs: [recordZoneID], withConfiguration: configuration)
+  ) async throws -> CKRecordZone {
+    try await fetch(
+      recordZoneIDs: [recordZoneID],
+      withConfiguration: configuration
+    ).single()
   }
 
   /// Fetches multiple record zones.
@@ -178,30 +169,28 @@ extension CCKDatabase {
   ///   - recordZoneIDs: The IDs of the record zones to fetch.
   ///   - configuration: The configuration to use for the underlying operation. If you don't specify a configuration,
   ///     the operation will use a default configuration.
-  /// - Returns: A [`Publisher`](https://developer.apple.com/documentation/combine/publisher) that emits the
-  /// [`CKRecordZone`](https://developer.apple.com/documentation/cloudkit/ckrecordzone)s, or an error if CombineCloudKit can't fetch them.
+  /// - Returns: An ``AsyncCloudKitSequence`` that emits the
+  /// [`CKRecordZone`](https://developer.apple.com/documentation/cloudkit/ckrecordzone)s.
   /// - SeeAlso: [CKFetchRecordZonesOperation](https://developer.apple.com/documentation/cloudkit/ckfetchrecordzonesoperation)
   public func fetch(
     recordZoneIDs: [CKRecordZone.ID],
     withConfiguration configuration: CKOperation.Configuration? = nil
-  ) -> AnyPublisher<CKRecordZone, Error> {
+  ) -> AsyncCloudKitSequence<CKRecordZone> {
     let operation = operationFactory.createFetchRecordZonesOperation(recordZoneIDs: recordZoneIDs)
-    return publisherFromFetch(operation, configuration) { completion in
+    return asyncFromFetch(operation, configuration) { completion in
       operation.fetchRecordZonesCompletionBlock = completion
     }
   }
 
   /// Fetches the database's record zones.
   ///
-  /// - Note: CombineCloudKit executes the fetch with a low priority. Use this method when you don’t require the record
+  /// - Note: AsyncCloudKit executes the fetch with a low priority. Use this method when you don’t require the record
   /// zones immediately.
-  /// - Returns: A [`Publisher`](https://developer.apple.com/documentation/combine/publisher) that emits the
-  /// [`CKRecordZone`](https://developer.apple.com/documentation/cloudkit/ckrecordzone)s, or an error if CombineCloudKit can't fetch them.
+  /// - Returns: An ``AsyncCloudKitSequence`` that emits the
+  /// [`CKRecordZone`](https://developer.apple.com/documentation/cloudkit/ckrecordzone)s.
   /// - SeeAlso: [fetchAllRecordZones](https://developer.apple.com/documentation/cloudkit/ckdatabase/1449112-fetchallrecordzones)
-  public func fetchAllRecordZonesAtBackgroundPriority()
-    -> AnyPublisher<CKRecordZone, Error>
-  {
-    publisherFromFetchAll(fetchAllRecordZones)
+  public func fetchAllRecordZonesAtBackgroundPriority() -> AsyncCloudKitSequence<CKRecordZone> {
+    asyncFromFetchAll(fetchAllRecordZones)
   }
 
   /// Fetches the database's record zones.
@@ -209,16 +198,16 @@ extension CCKDatabase {
   /// - Parameters:
   ///   - configuration: The configuration to use for the underlying operation. If you don't specify a configuration,
   ///     the operation will use a default configuration.
-  /// - Returns: A [`Publisher`](https://developer.apple.com/documentation/combine/publisher) that emits the
-  /// [`CKRecordZone`](https://developer.apple.com/documentation/cloudkit/ckrecordzone)s, or an error if CombineCloudKit can't fetch them.
+  /// - Returns: An ``AsyncCloudKitSequence`` that emits the
+  /// [`CKRecordZone`](https://developer.apple.com/documentation/cloudkit/ckrecordzone)s.
   /// - SeeAlso:
   /// [fetchAllRecordZonesOperation]
   /// (https://developer.apple.com/documentation/cloudkit/ckfetchrecordzonesoperation/1514890-fetchallrecordzonesoperation)
   public func fetchAllRecordZones(
     withConfiguration configuration: CKOperation.Configuration? = nil
-  ) -> AnyPublisher<CKRecordZone, Error> {
+  ) -> AsyncCloudKitSequence<CKRecordZone> {
     let operation = operationFactory.createFetchAllRecordZonesOperation()
-    return publisherFromFetch(operation, configuration) { completion in
+    return asyncFromFetch(operation, configuration) { completion in
       operation.fetchRecordZonesCompletionBlock = completion
     }
   }
