@@ -16,7 +16,7 @@ public struct AsyncCloudKitSequence<Element>: AsyncSequence {
     private let upstreamNext: () async throws -> Element?
 
     init<UpstreamIterator: AsyncIteratorProtocol>(_ iterator: UpstreamIterator)
-      where UpstreamIterator.Element == Element {
+    where UpstreamIterator.Element == Element {
       var iterator = iterator
       self.upstreamNext = {
         try await iterator.next()

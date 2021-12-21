@@ -43,8 +43,10 @@ class ErrorInjectionTests: AsyncCloudKitTests {
       { CKDatabaseSubscription(subscriptionID: "Test") },
       { $0.subscriptionID },
       { database in { subscription in try await database.save(subscription: subscription) } },
-      { database in { subscriptionID in try await database.fetch(subscriptionID: subscriptionID) } },
-      { database in { subscriptionID in try await database.delete(subscriptionID: subscriptionID) } }
+      { database in { subscriptionID in try await database.fetch(subscriptionID: subscriptionID) }
+      },
+      { database in { subscriptionID in try await database.delete(subscriptionID: subscriptionID) }
+      }
     )
   }
 
@@ -83,7 +85,7 @@ class ErrorInjectionTests: AsyncCloudKitTests {
     _ id: (T) -> ID,
     _ save: (ACKDatabase) -> ((T) async throws -> T),
     _ fetch: (ACKDatabase) -> ((ID) async throws -> T),
-    _ delete: (ACKDatabase) -> ((ID)async throws -> ID)
+    _ delete: (ACKDatabase) -> ((ID) async throws -> ID)
   ) async throws where ID: Equatable {
     try await verifyErrorPropagation { _, database in
       let item = create()
@@ -91,22 +93,6 @@ class ErrorInjectionTests: AsyncCloudKitTests {
       _ = try await save(database)(item)
       _ = try await fetch(database)(itemID)
       _ = try await delete(database)(itemID)
-    }
-  }
-
-  private func validateSaveFetchAndDelete<T, ID>(
-    _ create: () -> T,
-    _ id: (T) -> ID,
-    _ save: (ACKDatabase) -> ((T) -> AsyncCloudKitSequence<T>),
-    _ fetch: (ACKDatabase) -> ((ID) -> AsyncCloudKitSequence<T>),
-    _ delete: (ACKDatabase) -> ((ID) -> AsyncCloudKitSequence<ID>)
-  ) async throws where ID: Equatable {
-    try await verifyErrorPropagation { _, database in
-      let item = create()
-      let itemID = id(item)
-      _ = try await save(database)(item).collect()
-      _ = try await fetch(database)(itemID).collect()
-      _ = try await delete(database)(itemID).collect()
     }
   }
 

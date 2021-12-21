@@ -39,7 +39,6 @@ extension ACKDatabase {
     ).single()
   }
 
-
   /// Saves multiple record zones.
   ///
   /// - Parameters:
@@ -67,7 +66,9 @@ extension ACKDatabase {
   /// to happen immediately.
   /// - Returns: The deleted [`CKRecordZone.ID`](https://developer.apple.com/documentation/cloudkit/ckrecordzone/id).
   /// - SeeAlso: [`delete`](https://developer.apple.com/documentation/cloudkit/ckdatabase/1449118-delete)
-  public func deleteAtBackgroundPriority(recordZoneID: CKRecordZone.ID) async throws -> CKRecordZone.ID {
+  public func deleteAtBackgroundPriority(recordZoneID: CKRecordZone.ID) async throws
+    -> CKRecordZone.ID
+  {
     try await asyncAtBackgroundPriorityFrom(delete, with: recordZoneID)
   }
 
@@ -141,7 +142,9 @@ extension ACKDatabase {
   /// zone immediately.
   /// - Returns: The [`CKRecordZone`](https://developer.apple.com/documentation/cloudkit/ckrecordzone).
   /// - SeeAlso: [fetch](https://developer.apple.com/documentation/cloudkit/ckdatabase/1449104-fetch)
-  public func fetchAtBackgroundPriority(withRecordZoneID recordZoneID: CKRecordZone.ID) async throws -> CKRecordZone {
+  public func fetchAtBackgroundPriority(withRecordZoneID recordZoneID: CKRecordZone.ID) async throws
+    -> CKRecordZone
+  {
     try await asyncAtBackgroundPriorityFrom(fetch, with: recordZoneID)
   }
 

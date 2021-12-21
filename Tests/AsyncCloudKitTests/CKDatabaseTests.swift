@@ -30,17 +30,20 @@ final class CKDatabaseTests: AsyncCloudKitTests {
 
   func testDeleteRecordAtBackgroundPriorityFailsWhenDoesNotExist() async throws {
     let record = CKRecord(recordType: "Test")
-    await assertThrowsError(try await database.deleteAtBackgroundPriority(recordID: record.recordID))
+    await assertThrowsError(
+      try await database.deleteAtBackgroundPriority(recordID: record.recordID))
   }
 
   func testDeleteRecordZoneAtBackgroundPriorityFailsWhenDoesNotExist() async throws {
     let zone = CKRecordZone(zoneName: "Test")
-    await assertThrowsError(try await database.deleteAtBackgroundPriority(recordZoneID: zone.zoneID))
+    await assertThrowsError(
+      try await database.deleteAtBackgroundPriority(recordZoneID: zone.zoneID))
   }
 
   func testDeleteSubscriptionAtBackgroundPriorityFailsWhenDoesNotExist() async throws {
     let subscription = CKDatabaseSubscription(subscriptionID: "Test")
-    await assertThrowsError(try await database.deleteAtBackgroundPriority(subscriptionID: subscription.subscriptionID))
+    await assertThrowsError(
+      try await database.deleteAtBackgroundPriority(subscriptionID: subscription.subscriptionID))
   }
 
   func testFetchRecordFailsWhenDoesNotExist() async throws {
@@ -50,7 +53,8 @@ final class CKDatabaseTests: AsyncCloudKitTests {
 
   func testFetchRecordWithProgressFailsWhenDoesNotExist() async throws {
     let record = CKRecord(recordType: "Test")
-    await assertThrowsError(try await database.fetchWithProgress(recordID: record.recordID).collect())
+    await assertThrowsError(
+      try await database.fetchWithProgress(recordID: record.recordID).collect())
   }
 
   func testFetchRecordZoneFailsWhenDoesNotExist() async throws {
@@ -65,31 +69,36 @@ final class CKDatabaseTests: AsyncCloudKitTests {
 
   func testFetchRecordAtBackgroundPriorityFailsWhenDoesNotExist() async throws {
     let record = CKRecord(recordType: "Test")
-    await assertThrowsError(try await database.fetchAtBackgroundPriority(withRecordID: record.recordID))
+    await assertThrowsError(
+      try await database.fetchAtBackgroundPriority(withRecordID: record.recordID))
   }
 
   func testFetchRecordZoneAtBackgroundPriorityFailsWhenDoesNotExist() async throws {
     let zone = CKRecordZone(zoneName: "Test")
-    await assertThrowsError(try await database.fetchAtBackgroundPriority(withRecordZoneID: zone.zoneID))
+    await assertThrowsError(
+      try await database.fetchAtBackgroundPriority(withRecordZoneID: zone.zoneID))
   }
 
   func testFetchSubscriptionAtBackgroundPriorityFailsWhenDoesNotExist() async throws {
     let subscription = CKDatabaseSubscription(subscriptionID: "Test")
-    await assertThrowsError(try await database.fetchAtBackgroundPriority(
-      withSubscriptionID: subscription.subscriptionID))
+    await assertThrowsError(
+      try await database.fetchAtBackgroundPriority(
+        withSubscriptionID: subscription.subscriptionID))
   }
 
   func testFetchRecordsIncludesOnlyRequestedRecords() async throws {
     let records = (1...3).map { CKRecord(recordType: "Test\($0)") }
     _ = try await database.save(records: records).collect()
-    let fetched = try await database.fetch(recordIDs: [records[0].recordID, records[1].recordID]).collect()
+    let fetched = try await database.fetch(recordIDs: [records[0].recordID, records[1].recordID])
+      .collect()
     XCTAssertEqual(Set(fetched), Set(records[0...1]))
   }
 
   func testFetchRecordZonesIncludesOnlyRequestedRecordZones() async throws {
     let zones = (1...3).map { CKRecordZone(zoneName: "Test\($0)") }
     _ = try await database.save(recordZones: zones).collect()
-    let fetched = try await database.fetch(recordZoneIDs: [zones[0].zoneID, zones[1].zoneID]).collect()
+    let fetched = try await database.fetch(recordZoneIDs: [zones[0].zoneID, zones[1].zoneID])
+      .collect()
     XCTAssertEqual(Set(fetched), Set(zones[0...1]))
   }
 
@@ -136,7 +145,8 @@ final class CKDatabaseTests: AsyncCloudKitTests {
     let fetched = try await validateFetchProgressOfSingleRecord(from: fetch)
     XCTAssertEqual(fetched.recordID, record.recordID)
 
-    let deleted = try await database.delete(recordID: saved.recordID, withConfiguration: configuration)
+    let deleted = try await database.delete(
+      recordID: saved.recordID, withConfiguration: configuration)
     XCTAssertEqual(deleted, record.recordID)
   }
 
@@ -216,8 +226,7 @@ final class CKDatabaseTests: AsyncCloudKitTests {
 
   private func validateFetchProgress(
     from sequence: AsyncCloudKitSequence<((CKRecord.ID, Progress)?, CKRecord?)>
-  ) async throws -> [CKRecord]
-  {
+  ) async throws -> [CKRecord] {
     var records: [CKRecord] = []
     var recordProgress: [CKRecord.ID: Progress] = [:]
     let elements = try await sequence.collect()
@@ -363,7 +372,8 @@ final class CKDatabaseTests: AsyncCloudKitTests {
     _ = try await database.save(records: records, withConfiguration: configuration).collect()
 
     // MockQueryOperation returns every second record of matching type, sorted by ID.recordName.
-    let results = try await database.performQuery(ofType: "Test", withConfiguration: configuration).collect()
+    let results = try await database.performQuery(ofType: "Test", withConfiguration: configuration)
+      .collect()
     XCTAssertEqual(Set(results), Set(stride(from: 0, to: 9, by: 2).map { records[$0 + 1] }))
   }
 

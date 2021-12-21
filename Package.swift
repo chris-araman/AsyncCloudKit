@@ -18,7 +18,7 @@ let package = Package(
     .library(
       name: "AsyncCloudKit",
       targets: ["AsyncCloudKit"]
-    ),
+    )
   ],
   dependencies: [
     // Used by script/lint. Assumes current Swift tools.

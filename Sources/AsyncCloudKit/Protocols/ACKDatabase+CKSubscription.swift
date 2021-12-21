@@ -17,7 +17,8 @@ extension ACKDatabase {
   /// happen immediately.
   /// - Returns: The saved [`CKSubscription`](https://developer.apple.com/documentation/cloudkit/cksubscription).
   /// - SeeAlso: [`save`](https://developer.apple.com/documentation/cloudkit/ckdatabase/1449102-save)
-  public func saveAtBackgroundPriority(subscription: CKSubscription) async throws -> CKSubscription {
+  public func saveAtBackgroundPriority(subscription: CKSubscription) async throws -> CKSubscription
+  {
     try await asyncAtBackgroundPriorityFrom(save, with: subscription)
   }
 
@@ -66,7 +67,9 @@ extension ACKDatabase {
   /// to happen immediately.
   /// - Returns: The deleted [`CKSubscription.ID`](https://developer.apple.com/documentation/cloudkit/cksubscription/id).
   /// - SeeAlso: [`delete`](https://developer.apple.com/documentation/cloudkit/ckdatabase/3003590-delete)
-  public func deleteAtBackgroundPriority(subscriptionID: CKSubscription.ID) async throws -> CKSubscription.ID {
+  public func deleteAtBackgroundPriority(subscriptionID: CKSubscription.ID) async throws
+    -> CKSubscription.ID
+  {
     try await asyncAtBackgroundPriorityFrom(delete, with: subscriptionID)
   }
 
@@ -140,7 +143,9 @@ extension ACKDatabase {
   /// subscription immediately.
   /// - Returns: The [`CKSubscription`](https://developer.apple.com/documentation/cloudkit/cksubscription).
   /// - SeeAlso: [fetch](https://developer.apple.com/documentation/cloudkit/ckdatabase/3003591-fetch)
-  public func fetchAtBackgroundPriority(withSubscriptionID subscriptionID: CKSubscription.ID) async throws -> CKSubscription {
+  public func fetchAtBackgroundPriority(withSubscriptionID subscriptionID: CKSubscription.ID)
+    async throws -> CKSubscription
+  {
     try await asyncAtBackgroundPriorityFrom(fetch, with: subscriptionID)
   }
 

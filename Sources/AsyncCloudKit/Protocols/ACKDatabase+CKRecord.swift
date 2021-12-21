@@ -365,7 +365,8 @@ extension ACKDatabase {
   /// immediately.
   /// - Returns: The [`CKRecord`](https://developer.apple.com/documentation/cloudkit/ckrecord).
   /// - SeeAlso: [fetch](https://developer.apple.com/documentation/cloudkit/ckdatabase/1449126-fetch)
-  public func fetchAtBackgroundPriority(withRecordID recordID: CKRecord.ID) async throws -> CKRecord {
+  public func fetchAtBackgroundPriority(withRecordID recordID: CKRecord.ID) async throws -> CKRecord
+  {
     try await asyncAtBackgroundPriorityFrom(fetch, with: recordID)
   }
 
