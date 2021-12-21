@@ -16,7 +16,7 @@ jobs:
     steps:
       - name: Clone
         uses: actions/checkout@v2
-      - name: Select Current Swift
+      - name: Select Latest Swift
         uses: mxcl/xcodebuild@v1
         with:
           action: none
@@ -60,7 +60,8 @@ jobs:
           directory: .xcodecov
   sanitize:
     name: ${{ matrix.name }} Sanitizer
-    runs-on: macos-latest
+    # TODO: Use macos-latest once it is >= 11.
+    runs-on: macos-11
     strategy:
       fail-fast: false
       matrix:
@@ -76,5 +77,10 @@ jobs:
     steps:
       - name: Clone
         uses: actions/checkout@v2
+      - name: Select Latest Swift
+        uses: mxcl/xcodebuild@v1
+        with:
+          action: none
+          swift: ^5
       - name: Sanitize
         run: swift test --sanitize=${{ matrix.sanitizer }}
