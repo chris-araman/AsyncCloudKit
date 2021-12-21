@@ -377,6 +377,14 @@ final class CKDatabaseTests: AsyncCloudKitTests {
   // func testTerminatingSequenceEarlyCancelsQuery() async throws {
   // }
 
+  func testSecondIterationIsEmpty() async throws {
+    let records = (0...9).map { _ in CKRecord(recordType: "Test") }
+    let sequence = database.save(records: records)
+    _ = try await sequence.collect()
+    let secondIteration = try await sequence.collect()
+    XCTAssert(secondIteration.isEmpty)
+  }
+
   func testCKOperationFactory() {
     let factory = CKOperationFactory()
     _ = factory.createFetchAllRecordZonesOperation()

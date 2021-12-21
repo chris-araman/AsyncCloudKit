@@ -4,9 +4,9 @@ jazzy \
   --author 'Chris Araman' \
   --author_url https://github.com/chris-araman \
   --clean \
-  --github_url https://github.com/chris-araman/CombineCloudKit \
-  --github-file-prefix https://github.com/chris-araman/CombineCloudKit/tree/"$(git rev-parse HEAD)" \
-  --module CombineCloudKit \
+  --github_url https://github.com/chris-araman/AsyncCloudKit \
+  --github-file-prefix https://github.com/chris-araman/AsyncCloudKit/tree/"$(git rev-parse HEAD)" \
+  --module AsyncCloudKit \
   --module-version "$(git describe --tags)" \
   --output docs \
   --theme fullwidth

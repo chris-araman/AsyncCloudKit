@@ -1,6 +1,6 @@
 ---
 name: Feature request
-about: Suggest a new feature or enhancement for CombineCloudKit
+about: Suggest a new feature or enhancement for AsyncCloudKit
 title: ':sparkles:  '
 labels: enhancement
 assignees: chris-araman
@@ -10,7 +10,7 @@ assignees: chris-araman
 
 A clear and concise description of what the problem is.
 
-> CombineCloudKit doesn't yet support X.
+> AsyncCloudKit doesn't yet support X.
 
 ## Proposed solution
 

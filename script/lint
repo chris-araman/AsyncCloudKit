@@ -6,7 +6,7 @@ fi
 
 brew bundle install --no-lock --quiet >/dev/null
 
-echo "⚙️  Linting CombineCloudKit..."
+echo "⚙️  Linting AsyncCloudKit..."
 
 echo "  🧹 git"
 git diff --check
@@ -16,9 +16,6 @@ markdownlint --config .markdownlint.json --fix .github .
 
 echo "  🧹 periphery"
 periphery scan --quiet
-
-echo "  🧹 pod"
-pod lib lint --silent CombineCloudKit.podspec
 
 echo "  🧹 prettier"
 prettier --loglevel warn --write .
@@ -39,4 +36,4 @@ SOURCES=(
 swift run --skip-build swift-format format --in-place --recursive "${SOURCES[@]}"
 swift run --skip-build swift-format lint --recursive "${SOURCES[@]}"
 
-echo "✅ CombineCloudKit is free of lint!"
+echo "✅ AsyncCloudKit is free of lint!"
