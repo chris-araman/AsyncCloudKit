@@ -99,6 +99,9 @@ To learn more about Swift Concurrency and CloudKit, watch these videos from WWDC
 - [Swift Language Features for Concurrency](https://docs.swift.org/swift-book/LanguageGuide/Concurrency.html)
 - [Apple Concurrency Module](https://developer.apple.com/documentation/swift/swift_standard_library/concurrency)
 
+If you're looking for Swift Combine extensions for CloudKit, take a look at
+[CombineCloudKit](https://github.com/chris-araman/CombineCloudKit)!
+
 ## 📜 License
 
 AsyncCloudKit was created by [Chris Araman](https://github.com/chris-araman). It is published under the
