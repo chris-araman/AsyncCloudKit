@@ -64,7 +64,7 @@ func queryDueItems(database: CKDatabase, due: Date) async throws {
 
 ### Cancellation
 
-AsyncCloudKit functions that return an `AsyncCloudKitSequence` queue an operation immediately. Iterating
+AsyncCloudKit functions that return an `ACKSequence` queue an operation immediately. Iterating
 the sequence allows you to inspect the results of the operation. If you stop iterating the sequence early,
 the operation may be cancelled.
 

@@ -130,7 +130,7 @@ extension ACKDatabase {
     _ operation: ACKDatabaseOperation,
     _ configuration: CKOperation.Configuration? = nil,
     _ setCompletion: (@escaping ([Ignored: Output]?, Error?) -> Void) -> Void
-  ) -> AsyncCloudKitSequence<Output> {
+  ) -> ACKSequence<Output> {
     if configuration != nil {
       operation.configuration = configuration
     }
@@ -152,12 +152,12 @@ extension ACKDatabase {
       }
 
       self.add(operation)
-    }.eraseToAsyncCloudKitSequence()
+    }.erase()
   }
 
   func asyncFromFetchAll<Output>(
     _ method: @escaping (@escaping ([Output]?, Error?) -> Void) -> Void
-  ) -> AsyncCloudKitSequence<Output> {
+  ) -> ACKSequence<Output> {
     AsyncThrowingStream { continuation in
       method { outputs, error in
         guard let outputs = outputs, error == nil else {
@@ -171,14 +171,14 @@ extension ACKDatabase {
 
         continuation.finish()
       }
-    }.eraseToAsyncCloudKitSequence()
+    }.erase()
   }
 
   func asyncFromModify<Output, OutputID>(
     _ operation: ACKDatabaseOperation,
     _ configuration: CKOperation.Configuration? = nil,
     _ setCompletion: (@escaping ([Output]?, [OutputID]?, Error?) -> Void) -> Void
-  ) -> AsyncCloudKitSequence<(Output?, OutputID?)> {
+  ) -> ACKSequence<(Output?, OutputID?)> {
     if configuration != nil {
       operation.configuration = configuration
     }
@@ -208,6 +208,6 @@ extension ACKDatabase {
       }
 
       self.add(operation)
-    }.eraseToAsyncCloudKitSequence()
+    }.erase()
   }
 }

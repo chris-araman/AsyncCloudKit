@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
   <head>
-    <title>AsyncCloudKitSequence Structure Reference</title>
+    <title>ACKSequence Structure Reference</title>
     <link rel="stylesheet" type="text/css" href="../css/jazzy.css" />
     <link rel="stylesheet" type="text/css" href="../css/highlight.css" />
     <meta charset="utf-8">
@@ -14,9 +14,9 @@
   </head>
   <body>
 
-    <a name="//apple_ref/swift/Struct/AsyncCloudKitSequence" class="dashAnchor"></a>
+    <a name="//apple_ref/swift/Struct/ACKSequence" class="dashAnchor"></a>
 
-    <a title="AsyncCloudKitSequence Structure Reference"></a>
+    <a title="ACKSequence Structure Reference"></a>
 
     <header class="header">
       <p class="header-col header-col--primary">
@@ -44,7 +44,7 @@
     <p class="breadcrumbs">
       <a class="breadcrumb" href="../index.html">AsyncCloudKit Reference</a>
       <img class="carat" src="../img/carat.png" alt=""/>
-      AsyncCloudKitSequence Structure Reference
+      ACKSequence Structure Reference
     </p>
 
     <div class="content-wrapper">
@@ -84,10 +84,10 @@
             <a class="nav-group-name-link" href="../Structs.html">Structures</a>
             <ul class="nav-group-tasks">
               <li class="nav-group-task">
-                <a class="nav-group-task-link" href="../Structs/AsyncCloudKitSequence.html">AsyncCloudKitSequence</a>
+                <a class="nav-group-task-link" href="../Structs/ACKSequence.html">ACKSequence</a>
               </li>
               <li class="nav-group-task">
-                <a class="nav-group-task-link" href="../Structs/AsyncCloudKitSequence/AsyncCloudKitIterator.html">– AsyncCloudKitIterator</a>
+                <a class="nav-group-task-link" href="../Structs/ACKSequence/Iterator.html">– Iterator</a>
               </li>
             </ul>
           </li>
@@ -97,20 +97,20 @@
 
         <section class="section">
           <div class="section-content top-matter">
-            <h1>AsyncCloudKitSequence</h1>
+            <h1>ACKSequence</h1>
               <div class="declaration">
                 <div class="language">
                   
-                  <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">struct</span> <span class="kt">AsyncCloudKitSequence</span><span class="o">&lt;</span><span class="kt">Element</span><span class="o">&gt;</span> <span class="p">:</span> <span class="kt">AsyncSequence</span></code></pre>
+                  <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">struct</span> <span class="kt">ACKSequence</span><span class="o">&lt;</span><span class="kt">Element</span><span class="o">&gt;</span> <span class="p">:</span> <span class="kt">AsyncSequence</span></code></pre>
 
                 </div>
               </div>
             <p>An <a href="https://developer.apple.com/documentation/swift/asyncsequence"><code>AsyncSequence</code></a>
 of results from an AsyncCloudKit operation. If this sequence is iterated twice,
-no operation is queued, and no results are returned.</p>
+no second operation is queued, and no results are returned.</p>
 
               <div class="slightly-smaller">
-                <a href="https://github.com/chris-araman/AsyncCloudKit/tree/ad56798386493a1ba33f6646fd9c5f2d6bb99654/Sources/AsyncCloudKit/AsyncCloudKitSequence.swift#L12-L63">Show on GitHub</a>
+                <a href="https://github.com/chris-araman/AsyncCloudKit/tree/5c8c97e753a7355ffd19c56016cb80a164055e56/Sources/AsyncCloudKit/ACKSequence.swift#L12-L54">Show on GitHub</a>
               </div>
           </div>
         </section>
@@ -138,12 +138,12 @@ no operation is queued, and no results are returned.</p>
                         <h4>Declaration</h4>
                         <div class="language">
                           <p class="aside-title">Swift</p>
-                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">typealias</span> <span class="kt">AsyncIterator</span> <span class="o">=</span> <span class="kt"><a href="../Structs/AsyncCloudKitSequence/AsyncCloudKitIterator.html">AsyncCloudKitIterator</a></span><span class="o">&lt;</span><span class="kt"><a href="../Structs/AsyncCloudKitSequence.html#/s:Sci7ElementQa">Element</a></span><span class="o">&gt;</span></code></pre>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">typealias</span> <span class="kt">AsyncIterator</span> <span class="o">=</span> <span class="kt"><a href="../Structs/ACKSequence/Iterator.html">Iterator</a></span></code></pre>
 
                         </div>
                       </div>
                       <div class="slightly-smaller">
-                        <a href="https://github.com/chris-araman/AsyncCloudKit/tree/ad56798386493a1ba33f6646fd9c5f2d6bb99654/Sources/AsyncCloudKit/AsyncCloudKitSequence.swift#L13">Show on GitHub</a>
+                        <a href="https://github.com/chris-araman/AsyncCloudKit/tree/5c8c97e753a7355ffd19c56016cb80a164055e56/Sources/AsyncCloudKit/ACKSequence.swift#L13">Show on GitHub</a>
                       </div>
                     </section>
                   </div>
@@ -172,7 +172,7 @@ no operation is queued, and no results are returned.</p>
                         </div>
                       </div>
                       <div class="slightly-smaller">
-                        <a href="https://github.com/chris-araman/AsyncCloudKit/tree/ad56798386493a1ba33f6646fd9c5f2d6bb99654/Sources/AsyncCloudKit/AsyncCloudKitSequence.swift#L14">Show on GitHub</a>
+                        <a href="https://github.com/chris-araman/AsyncCloudKit/tree/5c8c97e753a7355ffd19c56016cb80a164055e56/Sources/AsyncCloudKit/ACKSequence.swift#L14">Show on GitHub</a>
                       </div>
                     </section>
                   </div>
@@ -180,9 +180,9 @@ no operation is queued, and no results are returned.</p>
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/s:13AsyncCloudKit0abC8SequenceV0abC8IteratorV"></a>
-                    <a name="//apple_ref/swift/Struct/AsyncCloudKitIterator" class="dashAnchor"></a>
-                    <a class="token" href="#/s:13AsyncCloudKit0abC8SequenceV0abC8IteratorV">AsyncCloudKitIterator</a>
+                    <a name="/s:13AsyncCloudKit11ACKSequenceV8IteratorV"></a>
+                    <a name="//apple_ref/swift/Struct/Iterator" class="dashAnchor"></a>
+                    <a class="token" href="#/s:13AsyncCloudKit11ACKSequenceV8IteratorV">Iterator</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -198,18 +198,18 @@ of results from an AsyncCloudKit operation.</p>
 
 </div>
 
-                        <a href="../Structs/AsyncCloudKitSequence/AsyncCloudKitIterator.html" class="slightly-smaller">See more</a>
+                        <a href="../Structs/ACKSequence/Iterator.html" class="slightly-smaller">See more</a>
                       </div>
                       <div class="declaration">
                         <h4>Declaration</h4>
                         <div class="language">
                           <p class="aside-title">Swift</p>
-                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">struct</span> <span class="kt">AsyncCloudKitIterator</span><span class="o">&lt;</span><span class="kt"><a href="../Structs/AsyncCloudKitSequence.html#/s:Sci7ElementQa">Element</a></span><span class="o">&gt;</span> <span class="p">:</span> <span class="kt">AsyncIteratorProtocol</span></code></pre>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">struct</span> <span class="kt">Iterator</span> <span class="p">:</span> <span class="kt">AsyncIteratorProtocol</span></code></pre>
 
                         </div>
                       </div>
                       <div class="slightly-smaller">
-                        <a href="https://github.com/chris-araman/AsyncCloudKit/tree/ad56798386493a1ba33f6646fd9c5f2d6bb99654/Sources/AsyncCloudKit/AsyncCloudKitSequence.swift#L19-L41">Show on GitHub</a>
+                        <a href="https://github.com/chris-araman/AsyncCloudKit/tree/5c8c97e753a7355ffd19c56016cb80a164055e56/Sources/AsyncCloudKit/ACKSequence.swift#L19-L37">Show on GitHub</a>
                       </div>
                     </section>
                   </div>
@@ -217,9 +217,9 @@ of results from an AsyncCloudKit operation.</p>
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/s:13AsyncCloudKit0abC8SequenceV04makeA8IteratorAC0abcF0Vyx_xGyF"></a>
+                    <a name="/s:13AsyncCloudKit11ACKSequenceV04makeA8IteratorAC0F0Vyx_GyF"></a>
                     <a name="//apple_ref/swift/Method/makeAsyncIterator()" class="dashAnchor"></a>
-                    <a class="token" href="#/s:13AsyncCloudKit0abC8SequenceV04makeA8IteratorAC0abcF0Vyx_xGyF">makeAsyncIterator()</a>
+                    <a class="token" href="#/s:13AsyncCloudKit11ACKSequenceV04makeA8IteratorAC0F0Vyx_GyF">makeAsyncIterator()</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -227,7 +227,7 @@ of results from an AsyncCloudKit operation.</p>
                     <section class="section">
                       <div class="pointer"></div>
                       <div class="abstract">
-                        <p>Creates an <code><a href="../Structs/AsyncCloudKitSequence/AsyncCloudKitIterator.html">AsyncCloudKitIterator</a></code> of results from an AsyncCloudKit operation.</p>
+                        <p>Creates an <code><a href="../Structs/ACKSequence/Iterator.html">Iterator</a></code> of record zones from an AsyncCloudKit operation.</p>
 <div class="aside aside-see-also">
     <p class="aside-title">See also</p>
     <a href="https://developer.apple.com/documentation/swift/asyncsequence"><code>AsyncSequence</code></a>
@@ -239,53 +239,16 @@ of results from an AsyncCloudKit operation.</p>
                         <h4>Declaration</h4>
                         <div class="language">
                           <p class="aside-title">Swift</p>
-                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">func</span> <span class="nf">makeAsyncIterator</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="kt"><a href="../Structs/AsyncCloudKitSequence/AsyncCloudKitIterator.html">AsyncCloudKitIterator</a></span><span class="o">&lt;</span><span class="kt"><a href="../Structs/AsyncCloudKitSequence.html#/s:Sci7ElementQa">Element</a></span><span class="o">&gt;</span></code></pre>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">func</span> <span class="nf">makeAsyncIterator</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="kt"><a href="../Structs/ACKSequence/Iterator.html">Iterator</a></span></code></pre>
 
                         </div>
                       </div>
                       <div>
                         <h4>Return Value</h4>
-                        <p>The <code><a href="../Structs/AsyncCloudKitSequence/AsyncCloudKitIterator.html">AsyncCloudKitIterator</a></code>.</p>
+                        <p>The <code><a href="../Structs/ACKSequence/Iterator.html">Iterator</a></code>.</p>
                       </div>
                       <div class="slightly-smaller">
-                        <a href="https://github.com/chris-araman/AsyncCloudKit/tree/ad56798386493a1ba33f6646fd9c5f2d6bb99654/Sources/AsyncCloudKit/AsyncCloudKitSequence.swift#L54-L56">Show on GitHub</a>
-                      </div>
-                    </section>
-                  </div>
-                </li>
-                <li class="item">
-                  <div>
-                    <code>
-                    <a name="/s:13AsyncCloudKit0abC8SequenceV7collectSayxGyYaKF"></a>
-                    <a name="//apple_ref/swift/Method/collect()" class="dashAnchor"></a>
-                    <a class="token" href="#/s:13AsyncCloudKit0abC8SequenceV7collectSayxGyYaKF">collect()</a>
-                    </code>
-                      <span class="declaration-note">
-                        Asynchronous
-                      </span>
-                  </div>
-                  <div class="height-container">
-                    <div class="pointer-container"></div>
-                    <section class="section">
-                      <div class="pointer"></div>
-                      <div class="abstract">
-                        <p>Collects all of the results from the sequence and returns them as a single array.</p>
-
-                      </div>
-                      <div class="declaration">
-                        <h4>Declaration</h4>
-                        <div class="language">
-                          <p class="aside-title">Swift</p>
-                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">func</span> <span class="nf">collect</span><span class="p">()</span> <span class="k">async</span> <span class="k">throws</span> <span class="o">-&gt;</span> <span class="p">[</span><span class="kt"><a href="../Structs/AsyncCloudKitSequence.html#/s:Sci7ElementQa">Element</a></span><span class="p">]</span></code></pre>
-
-                        </div>
-                      </div>
-                      <div>
-                        <h4>Return Value</h4>
-                        <p>An array of the results.</p>
-                      </div>
-                      <div class="slightly-smaller">
-                        <a href="https://github.com/chris-araman/AsyncCloudKit/tree/ad56798386493a1ba33f6646fd9c5f2d6bb99654/Sources/AsyncCloudKit/AsyncCloudKitSequence.swift#L60-L62">Show on GitHub</a>
+                        <a href="https://github.com/chris-araman/AsyncCloudKit/tree/5c8c97e753a7355ffd19c56016cb80a164055e56/Sources/AsyncCloudKit/ACKSequence.swift#L51-L53">Show on GitHub</a>
                       </div>
                     </section>
                   </div>
@@ -298,7 +261,7 @@ of results from an AsyncCloudKit operation.</p>
       </article>
     </div>
     <section class="footer">
-      <p>&copy; 2021 <a class="link" href="https://github.com/chris-araman" target="_blank" rel="external noopener">Chris Araman</a>. All rights reserved. (Last updated: 2021-12-20)</p>
+      <p>&copy; 2021 <a class="link" href="https://github.com/chris-araman" target="_blank" rel="external noopener">Chris Araman</a>. All rights reserved. (Last updated: 2021-12-21)</p>
       <p>Generated by <a class="link" href="https://github.com/realm/jazzy" target="_blank" rel="external noopener">jazzy ♪♫ v0.14.1</a>, a <a class="link" href="https://realm.io" target="_blank" rel="external noopener">Realm</a> project.</p>
     </section>
   </body>

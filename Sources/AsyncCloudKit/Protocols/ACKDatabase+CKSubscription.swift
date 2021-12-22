@@ -46,17 +46,17 @@ extension ACKDatabase {
   ///   - subscriptions: The subscriptions to save.
   ///   - configuration: The configuration to use for the underlying operation. If you don't specify a configuration,
   ///     the operation will use a default configuration.
-  /// - Returns: An ``AsyncCloudKitSequence`` that emits the saved
+  /// - Returns: An ``ACKSequence`` that emits the saved
   /// [`CKSubscription`](https://developer.apple.com/documentation/cloudkit/cksubscription)s.
   /// - SeeAlso: [`CKModifySubscriptionsOperation`](https://developer.apple.com/documentation/cloudkit/ckmodifysubscriptionsoperation)
   public func save(
     subscriptions: [CKSubscription],
     withConfiguration configuration: CKOperation.Configuration? = nil
-  ) -> AsyncCloudKitSequence<CKSubscription> {
+  ) -> ACKSequence<CKSubscription> {
     modify(subscriptionsToSave: subscriptions, withConfiguration: configuration).compactMap {
       saved, _ in
       saved
-    }.eraseToAsyncCloudKitSequence()
+    }.erase()
   }
 
   /// Deletes a single subscription.
@@ -97,17 +97,17 @@ extension ACKDatabase {
   ///   - subscriptionIDs: The IDs of the subscriptions to delete.
   ///   - configuration: The configuration to use for the underlying operation. If you don't specify a configuration,
   ///     the operation will use a default configuration.
-  /// - Returns: An ``AsyncCloudKitSequence`` that emits the deleted
+  /// - Returns: An ``ACKSequence`` that emits the deleted
   /// [`CKSubscription.ID`](https://developer.apple.com/documentation/cloudkit/cksubscription/id)s.
   /// - SeeAlso: [`CKModifySubscriptionsOperation`](https://developer.apple.com/documentation/cloudkit/ckmodifysubscriptionsoperation)
   public func delete(
     subscriptionIDs: [CKSubscription.ID],
     withConfiguration configuration: CKOperation.Configuration? = nil
-  ) -> AsyncCloudKitSequence<CKSubscription.ID> {
+  ) -> ACKSequence<CKSubscription.ID> {
     modify(subscriptionIDsToDelete: subscriptionIDs, withConfiguration: configuration).compactMap {
       _, deleted in
       deleted
-    }.eraseToAsyncCloudKitSequence()
+    }.erase()
   }
 
   /// Modifies one or more subscriptions.
@@ -117,7 +117,7 @@ extension ACKDatabase {
   ///   - subscriptionsToDelete: The IDs of the subscriptions to delete.
   ///   - configuration: The configuration to use for the underlying operation. If you don't specify a configuration,
   ///     the operation will use a default configuration.
-  /// - Returns: An ``AsyncCloudKitSequence`` that emits the saved
+  /// - Returns: An ``ACKSequence`` that emits the saved
   /// [`CKSubscription`](https://developer.apple.com/documentation/cloudkit/cksubscription)s and the deleted
   /// [`CKSubscription.ID`](https://developer.apple.com/documentation/cloudkit/cksubscription/id)s.
   /// - SeeAlso: [`CKModifySubscriptionsOperation`](https://developer.apple.com/documentation/cloudkit/ckmodifysubscriptionsoperation)
@@ -125,7 +125,7 @@ extension ACKDatabase {
     subscriptionsToSave: [CKSubscription]? = nil,
     subscriptionIDsToDelete: [CKSubscription.ID]? = nil,
     withConfiguration configuration: CKOperation.Configuration? = nil
-  ) -> AsyncCloudKitSequence<(CKSubscription?, CKSubscription.ID?)> {
+  ) -> ACKSequence<(CKSubscription?, CKSubscription.ID?)> {
     let operation = operationFactory.createModifySubscriptionsOperation(
       subscriptionsToSave: subscriptionsToSave,
       subscriptionIDsToDelete: subscriptionIDsToDelete
@@ -173,13 +173,13 @@ extension ACKDatabase {
   ///   - subscriptionIDs: The IDs of the subscriptions to fetch.
   ///   - configuration: The configuration to use for the underlying operation. If you don't specify a configuration,
   ///     the operation will use a default configuration.
-  /// - Returns: An ``AsyncCloudKitSequence`` that emits the
+  /// - Returns: An ``ACKSequence`` that emits the
   /// [`CKSubscription`](https://developer.apple.com/documentation/cloudkit/cksubscription)s.
   /// - SeeAlso: [CKFetchSubscriptionsOperation](https://developer.apple.com/documentation/cloudkit/ckfetchsubscriptionsoperation)
   public func fetch(
     subscriptionIDs: [CKSubscription.ID],
     withConfiguration configuration: CKOperation.Configuration? = nil
-  ) -> AsyncCloudKitSequence<CKSubscription> {
+  ) -> ACKSequence<CKSubscription> {
     let operation = operationFactory.createFetchSubscriptionsOperation(
       subscriptionIDs: subscriptionIDs)
     return asyncFromFetch(operation, configuration) { completion in
@@ -191,10 +191,10 @@ extension ACKDatabase {
   ///
   /// - Note: AsyncCloudKit executes the fetch with a low priority. Use this method when you don’t require the
   /// subscriptions immediately.
-  /// - Returns: An ``AsyncCloudKitSequence`` that emits the
+  /// - Returns: An ``ACKSequence`` that emits the
   /// [`CKSubscription`](https://developer.apple.com/documentation/cloudkit/cksubscription)s.
   /// - SeeAlso: [fetchAllSubscriptions](https://developer.apple.com/documentation/cloudkit/ckdatabase/1449110-fetchallsubscriptions)
-  public func fetchAllSubscriptionsAtBackgroundPriority() -> AsyncCloudKitSequence<CKSubscription> {
+  public func fetchAllSubscriptionsAtBackgroundPriority() -> ACKSequence<CKSubscription> {
     asyncFromFetchAll(fetchAllSubscriptions)
   }
 
@@ -203,14 +203,14 @@ extension ACKDatabase {
   /// - Parameters:
   ///   - configuration: The configuration to use for the underlying operation. If you don't specify a configuration,
   ///     the operation will use a default configuration.
-  /// - Returns: An ``AsyncCloudKitSequence`` that emits the
+  /// - Returns: An ``ACKSequence`` that emits the
   /// [`CKSubscription`](https://developer.apple.com/documentation/cloudkit/cksubscription)s.
   /// - SeeAlso:
   /// [fetchAllSubscriptionsOperation]
   /// (https://developer.apple.com/documentation/cloudkit/ckfetchsubscriptionsoperation/1515282-fetchallsubscriptionsoperation)
   public func fetchAllSubscriptions(
     withConfiguration configuration: CKOperation.Configuration? = nil
-  ) -> AsyncCloudKitSequence<CKSubscription> {
+  ) -> ACKSequence<CKSubscription> {
     let operation = operationFactory.createFetchAllSubscriptionsOperation()
     return asyncFromFetch(operation, configuration) { completion in
       operation.fetchSubscriptionCompletionBlock = completion

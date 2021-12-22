@@ -187,7 +187,7 @@ final class CKDatabaseTests: AsyncCloudKitTests {
   }
 
   private func validateSaveProgressOfSingleRecord(
-    from sequence: AsyncCloudKitSequence<(CKRecord, Progress)>
+    from sequence: ACKSequence<(CKRecord, Progress)>
   ) async throws -> CKRecord {
     let records = try await validateSaveProgress(from: sequence)
     XCTAssertEqual(records.count, 1)
@@ -195,7 +195,7 @@ final class CKDatabaseTests: AsyncCloudKitTests {
   }
 
   private func validateFetchProgressOfSingleRecord(
-    from sequence: AsyncCloudKitSequence<((CKRecord.ID, Progress)?, CKRecord?)>
+    from sequence: ACKSequence<((CKRecord.ID, Progress)?, CKRecord?)>
   ) async throws -> CKRecord {
     let records = try await validateFetchProgress(from: sequence)
     XCTAssertEqual(records.count, 1)
@@ -203,7 +203,7 @@ final class CKDatabaseTests: AsyncCloudKitTests {
   }
 
   private func validateSaveProgress(
-    from sequence: AsyncCloudKitSequence<(CKRecord, Progress)>
+    from sequence: ACKSequence<(CKRecord, Progress)>
   ) async throws -> [CKRecord] {
     var recordProgress: [CKRecord: Progress] = [:]
     let elements = try await sequence.collect()
@@ -225,7 +225,7 @@ final class CKDatabaseTests: AsyncCloudKitTests {
   }
 
   private func validateFetchProgress(
-    from sequence: AsyncCloudKitSequence<((CKRecord.ID, Progress)?, CKRecord?)>
+    from sequence: ACKSequence<((CKRecord.ID, Progress)?, CKRecord?)>
   ) async throws -> [CKRecord] {
     var records: [CKRecord] = []
     var recordProgress: [CKRecord.ID: Progress] = [:]
@@ -342,8 +342,8 @@ final class CKDatabaseTests: AsyncCloudKitTests {
 
   private func validateFetchAll<T>(
     _ items: [T],
-    _ save: ([T], CKOperation.Configuration?) -> AsyncCloudKitSequence<T>,
-    _ fetch: () -> AsyncCloudKitSequence<T>
+    _ save: ([T], CKOperation.Configuration?) -> ACKSequence<T>,
+    _ fetch: () -> ACKSequence<T>
   ) async throws where T: Hashable {
     let configuration = CKOperation.Configuration()
     _ = try await save(items, configuration).collect()

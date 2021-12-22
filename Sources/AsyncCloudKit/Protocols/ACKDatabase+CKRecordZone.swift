@@ -45,17 +45,17 @@ extension ACKDatabase {
   ///   - recordZones: The record zones to save.
   ///   - configuration: The configuration to use for the underlying operation. If you don't specify a configuration,
   ///     the operation will use a default configuration.
-  /// - Returns: An ``AsyncCloudKitSequence`` that emits the saved
+  /// - Returns: An ``ACKSequence`` that emits the saved
   /// [`CKRecordZone`](https://developer.apple.com/documentation/cloudkit/ckrecordzone)s.
   /// - SeeAlso: [`CKModifyRecordZonesOperation`](https://developer.apple.com/documentation/cloudkit/ckmodifyrecordzonesoperation)
   public func save(
     recordZones: [CKRecordZone],
     withConfiguration configuration: CKOperation.Configuration? = nil
-  ) -> AsyncCloudKitSequence<CKRecordZone> {
+  ) -> ACKSequence<CKRecordZone> {
     modify(recordZonesToSave: recordZones, withConfiguration: configuration).compactMap {
       saved, _ in
       saved
-    }.eraseToAsyncCloudKitSequence()
+    }.erase()
   }
 
   /// Deletes a single record zone.
@@ -96,17 +96,17 @@ extension ACKDatabase {
   ///   - recordZoneIDs: The IDs of the record zones to delete.
   ///   - configuration: The configuration to use for the underlying operation. If you don't specify a configuration,
   ///     the operation will use a default configuration.
-  /// - Returns: An ``AsyncCloudKitSequence`` that emits the deleted
+  /// - Returns: An ``ACKSequence`` that emits the deleted
   /// [`CKRecordZone.ID`](https://developer.apple.com/documentation/cloudkit/ckrecordzone/id)s.
   /// - SeeAlso: [`CKModifyRecordZonesOperation`](https://developer.apple.com/documentation/cloudkit/ckmodifyrecordzonesoperation)
   public func delete(
     recordZoneIDs: [CKRecordZone.ID],
     withConfiguration configuration: CKOperation.Configuration? = nil
-  ) -> AsyncCloudKitSequence<CKRecordZone.ID> {
+  ) -> ACKSequence<CKRecordZone.ID> {
     modify(recordZoneIDsToDelete: recordZoneIDs, withConfiguration: configuration).compactMap {
       _, deleted in
       deleted
-    }.eraseToAsyncCloudKitSequence()
+    }.erase()
   }
 
   /// Modifies one or more record zones.
@@ -116,7 +116,7 @@ extension ACKDatabase {
   ///   - recordZonesToDelete: The IDs of the record zones to delete.
   ///   - configuration: The configuration to use for the underlying operation. If you don't specify a configuration,
   ///     the operation will use a default configuration.
-  /// - Returns: An ``AsyncCloudKitSequence`` that emits the saved
+  /// - Returns: An ``ACKSequence`` that emits the saved
   /// [`CKRecordZone`](https://developer.apple.com/documentation/cloudkit/ckrecordzone)s and the deleted
   /// [`CKRecordZone.ID`](https://developer.apple.com/documentation/cloudkit/ckrecordzone/id)s.
   /// - SeeAlso: [`CKModifyRecordZonesOperation`](https://developer.apple.com/documentation/cloudkit/ckmodifyrecordzonesoperation)
@@ -124,7 +124,7 @@ extension ACKDatabase {
     recordZonesToSave: [CKRecordZone]? = nil,
     recordZoneIDsToDelete: [CKRecordZone.ID]? = nil,
     withConfiguration configuration: CKOperation.Configuration? = nil
-  ) -> AsyncCloudKitSequence<(CKRecordZone?, CKRecordZone.ID?)> {
+  ) -> ACKSequence<(CKRecordZone?, CKRecordZone.ID?)> {
     let operation = operationFactory.createModifyRecordZonesOperation(
       recordZonesToSave: recordZonesToSave,
       recordZoneIDsToDelete: recordZoneIDsToDelete
@@ -172,13 +172,13 @@ extension ACKDatabase {
   ///   - recordZoneIDs: The IDs of the record zones to fetch.
   ///   - configuration: The configuration to use for the underlying operation. If you don't specify a configuration,
   ///     the operation will use a default configuration.
-  /// - Returns: An ``AsyncCloudKitSequence`` that emits the
+  /// - Returns: An ``ACKSequence`` that emits the
   /// [`CKRecordZone`](https://developer.apple.com/documentation/cloudkit/ckrecordzone)s.
   /// - SeeAlso: [CKFetchRecordZonesOperation](https://developer.apple.com/documentation/cloudkit/ckfetchrecordzonesoperation)
   public func fetch(
     recordZoneIDs: [CKRecordZone.ID],
     withConfiguration configuration: CKOperation.Configuration? = nil
-  ) -> AsyncCloudKitSequence<CKRecordZone> {
+  ) -> ACKSequence<CKRecordZone> {
     let operation = operationFactory.createFetchRecordZonesOperation(recordZoneIDs: recordZoneIDs)
     return asyncFromFetch(operation, configuration) { completion in
       operation.fetchRecordZonesCompletionBlock = completion
@@ -189,10 +189,10 @@ extension ACKDatabase {
   ///
   /// - Note: AsyncCloudKit executes the fetch with a low priority. Use this method when you don’t require the record
   /// zones immediately.
-  /// - Returns: An ``AsyncCloudKitSequence`` that emits the
+  /// - Returns: An ``ACKSequence`` that emits the
   /// [`CKRecordZone`](https://developer.apple.com/documentation/cloudkit/ckrecordzone)s.
   /// - SeeAlso: [fetchAllRecordZones](https://developer.apple.com/documentation/cloudkit/ckdatabase/1449112-fetchallrecordzones)
-  public func fetchAllRecordZonesAtBackgroundPriority() -> AsyncCloudKitSequence<CKRecordZone> {
+  public func fetchAllRecordZonesAtBackgroundPriority() -> ACKSequence<CKRecordZone> {
     asyncFromFetchAll(fetchAllRecordZones)
   }
 
@@ -201,14 +201,14 @@ extension ACKDatabase {
   /// - Parameters:
   ///   - configuration: The configuration to use for the underlying operation. If you don't specify a configuration,
   ///     the operation will use a default configuration.
-  /// - Returns: An ``AsyncCloudKitSequence`` that emits the
+  /// - Returns: An ``ACKSequence`` that emits the
   /// [`CKRecordZone`](https://developer.apple.com/documentation/cloudkit/ckrecordzone)s.
   /// - SeeAlso:
   /// [fetchAllRecordZonesOperation]
   /// (https://developer.apple.com/documentation/cloudkit/ckfetchrecordzonesoperation/1514890-fetchallrecordzonesoperation)
   public func fetchAllRecordZones(
     withConfiguration configuration: CKOperation.Configuration? = nil
-  ) -> AsyncCloudKitSequence<CKRecordZone> {
+  ) -> ACKSequence<CKRecordZone> {
     let operation = operationFactory.createFetchAllRecordZonesOperation()
     return asyncFromFetch(operation, configuration) { completion in
       operation.fetchRecordZonesCompletionBlock = completion

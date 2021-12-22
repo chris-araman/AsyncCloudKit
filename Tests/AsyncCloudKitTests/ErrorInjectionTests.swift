@@ -143,8 +143,8 @@ class ErrorInjectionTests: AsyncCloudKitTests {
 
   private func validateFetchAll<T>(
     _ items: [T],
-    _ save: (ACKDatabase) -> (([T], CKOperation.Configuration?) -> AsyncCloudKitSequence<T>),
-    _ fetch: (ACKDatabase) -> (() -> AsyncCloudKitSequence<T>)
+    _ save: (ACKDatabase) -> (([T], CKOperation.Configuration?) -> ACKSequence<T>),
+    _ fetch: (ACKDatabase) -> (() -> ACKSequence<T>)
   ) async throws where T: Hashable {
     try await verifyErrorPropagation(
       prepare: { _, database in

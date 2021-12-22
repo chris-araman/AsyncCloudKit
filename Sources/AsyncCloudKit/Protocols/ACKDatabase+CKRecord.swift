@@ -43,7 +43,7 @@ extension ACKDatabase {
   ///     the operation will use a default configuration.
   ///   - savePolicy: The policy to apply when the server contains a newer version of a specific record.
   ///   - clientChangeTokenData: A token that tracks local changes to records.
-  /// - Returns: An ``AsyncCloudKitSequence`` that emits the saved
+  /// - Returns: An ``ACKSequence`` that emits the saved
   /// [`CKRecord`](https://developer.apple.com/documentation/cloudkit/ckrecord)s.
   /// - SeeAlso: [`CKModifyRecordsOperation`](https://developer.apple.com/documentation/cloudkit/ckmodifyrecordsoperation)
   public func save(
@@ -52,7 +52,7 @@ extension ACKDatabase {
     withConfiguration configuration: CKOperation.Configuration? = nil,
     savePolicy: CKModifyRecordsOperation.RecordSavePolicy = .ifServerRecordUnchanged,
     clientChangeTokenData: Data? = nil
-  ) -> AsyncCloudKitSequence<CKRecord> {
+  ) -> ACKSequence<CKRecord> {
     modify(
       recordsToSave: records,
       recordIDsToDelete: nil,
@@ -62,7 +62,7 @@ extension ACKDatabase {
       clientChangeTokenData: clientChangeTokenData
     ).compactMap { saved, _ in
       saved
-    }.eraseToAsyncCloudKitSequence()
+    }.erase()
   }
 
   /// Saves a single record.
@@ -87,7 +87,7 @@ extension ACKDatabase {
   ///     the operation will use a default configuration.
   ///   - savePolicy: The policy to apply when the server contains a newer version of a specific record.
   ///   - clientChangeTokenData: A token that tracks local changes to records.
-  /// - Returns: An ``AsyncCloudKitSequence`` that emits the ``Progress`` of the saved
+  /// - Returns: An ``ACKSequence`` that emits the ``Progress`` of the saved
   /// [`CKRecord`](https://developer.apple.com/documentation/cloudkit/ckrecord).
   /// - SeeAlso: [`CKModifyRecordsOperation`](https://developer.apple.com/documentation/cloudkit/ckmodifyrecordsoperation)
   public func saveWithProgress(
@@ -95,7 +95,7 @@ extension ACKDatabase {
     withConfiguration configuration: CKOperation.Configuration? = nil,
     savePolicy: CKModifyRecordsOperation.RecordSavePolicy = .ifServerRecordUnchanged,
     clientChangeTokenData: Data? = nil
-  ) -> AsyncCloudKitSequence<(CKRecord, Progress)> {
+  ) -> ACKSequence<(CKRecord, Progress)> {
     saveWithProgress(
       records: [record],
       withConfiguration: configuration,
@@ -113,7 +113,7 @@ extension ACKDatabase {
   ///     the operation will use a default configuration.
   ///   - savePolicy: The policy to apply when the server contains a newer version of a specific record.
   ///   - clientChangeTokenData: A token that tracks local changes to records.
-  /// - Returns: An ``AsyncCloudKitSequence`` that emits the ``Progress`` of the saved
+  /// - Returns: An ``ACKSequence`` that emits the ``Progress`` of the saved
   /// [`CKRecord`](https://developer.apple.com/documentation/cloudkit/ckrecord)s.
   /// - SeeAlso: [`CKModifyRecordsOperation`](https://developer.apple.com/documentation/cloudkit/ckmodifyrecordsoperation)
   public func saveWithProgress(
@@ -122,7 +122,7 @@ extension ACKDatabase {
     withConfiguration configuration: CKOperation.Configuration? = nil,
     savePolicy: CKModifyRecordsOperation.RecordSavePolicy = .ifServerRecordUnchanged,
     clientChangeTokenData: Data? = nil
-  ) -> AsyncCloudKitSequence<(CKRecord, Progress)> {
+  ) -> ACKSequence<(CKRecord, Progress)> {
     modifyWithProgress(
       recordsToSave: records,
       recordIDsToDelete: nil,
@@ -132,7 +132,7 @@ extension ACKDatabase {
       clientChangeTokenData: clientChangeTokenData
     ).compactMap { progress, _ in
       progress
-    }.eraseToAsyncCloudKitSequence()
+    }.erase()
   }
 
   /// Deletes a single record.
@@ -161,14 +161,14 @@ extension ACKDatabase {
   ///     more records in a record zone.
   ///   - configuration: The configuration to use for the underlying operation. If you don't specify a configuration,
   ///     the operation will use a default configuration.
-  /// - Returns: An ``AsyncCloudKitSequence`` that emits the deleted
+  /// - Returns: An ``ACKSequence`` that emits the deleted
   /// [`CKRecord.ID`](https://developer.apple.com/documentation/cloudkit/ckrecord/id)s.
   /// - SeeAlso: [`CKModifyRecordsOperation`](https://developer.apple.com/documentation/cloudkit/ckmodifyrecordsoperation)
   public func delete(
     recordIDs: [CKRecord.ID],
     atomically isAtomic: Bool = true,
     withConfiguration configuration: CKOperation.Configuration? = nil
-  ) -> AsyncCloudKitSequence<CKRecord.ID> {
+  ) -> ACKSequence<CKRecord.ID> {
     modify(
       recordsToSave: nil,
       recordIDsToDelete: recordIDs,
@@ -176,7 +176,7 @@ extension ACKDatabase {
       withConfiguration: configuration
     ).compactMap { _, deleted in
       deleted
-    }.eraseToAsyncCloudKitSequence()
+    }.erase()
   }
 
   /// Deletes a single record.
@@ -202,7 +202,7 @@ extension ACKDatabase {
   ///     the operation will use a default configuration.
   ///   - savePolicy: The policy to apply when the server contains a newer version of a specific record.
   ///   - clientChangeTokenData: A token that tracks local changes to records.
-  /// - Returns: An ``AsyncCloudKitSequence`` that emits the saved
+  /// - Returns: An ``ACKSequence`` that emits the saved
   /// [`CKRecord`](https://developer.apple.com/documentation/cloudkit/ckrecord)s and the deleted
   /// [`CKRecord.ID`](https://developer.apple.com/documentation/cloudkit/ckrecord/id)s.
   /// - SeeAlso: [`CKModifyRecordsOperation`](https://developer.apple.com/documentation/cloudkit/ckmodifyrecordsoperation)
@@ -213,7 +213,7 @@ extension ACKDatabase {
     withConfiguration configuration: CKOperation.Configuration? = nil,
     savePolicy: CKModifyRecordsOperation.RecordSavePolicy = .ifServerRecordUnchanged,
     clientChangeTokenData: Data? = nil
-  ) -> AsyncCloudKitSequence<(CKRecord?, CKRecord.ID?)> {
+  ) -> ACKSequence<(CKRecord?, CKRecord.ID?)> {
     modifyWithProgress(
       recordsToSave: recordsToSave,
       recordIDsToDelete: recordIDsToDelete,
@@ -234,7 +234,7 @@ extension ACKDatabase {
       }
 
       return nil
-    }.eraseToAsyncCloudKitSequence()
+    }.erase()
   }
 
   /// Modifies one or more records.
@@ -248,7 +248,7 @@ extension ACKDatabase {
   ///     the operation will use a default configuration.
   ///   - savePolicy: The policy to apply when the server contains a newer version of a specific record.
   ///   - clientChangeTokenData: A token that tracks local changes to records.
-  /// - Returns: An ``AsyncCloudKitSequence`` that emits the ``Progress`` of the saved
+  /// - Returns: An ``ACKSequence`` that emits the ``Progress`` of the saved
   /// [`CKRecord`](https://developer.apple.com/documentation/cloudkit/ckrecord)s, and the deleted
   /// [`CKRecord.ID`](https://developer.apple.com/documentation/cloudkit/ckrecord/id)s.
   /// - SeeAlso: [`CKModifyRecordsOperation`](https://developer.apple.com/documentation/cloudkit/ckmodifyrecordsoperation)
@@ -259,7 +259,7 @@ extension ACKDatabase {
     withConfiguration configuration: CKOperation.Configuration? = nil,
     savePolicy: CKModifyRecordsOperation.RecordSavePolicy = .ifServerRecordUnchanged,
     clientChangeTokenData: Data? = nil
-  ) -> AsyncCloudKitSequence<((CKRecord, Progress)?, CKRecord.ID?)> {
+  ) -> ACKSequence<((CKRecord, Progress)?, CKRecord.ID?)> {
     AsyncThrowingStream { continuation in
       let operation = operationFactory.createModifyRecordsOperation(
         recordsToSave: recordsToSave, recordIDsToDelete: recordIDsToDelete
@@ -303,7 +303,7 @@ extension ACKDatabase {
       }
 
       self.add(operation)
-    }.eraseToAsyncCloudKitSequence()
+    }.erase()
   }
 
   /// Fetches the record with the specified ID.
@@ -340,21 +340,21 @@ extension ACKDatabase {
   ///     a record’s keys.
   ///   - configuration: The configuration to use for the underlying operation. If you don't specify a configuration,
   ///     the operation will use a default configuration.
-  /// - Returns: An ``AsyncCloudKitSequence`` that emits the fetched
+  /// - Returns: An ``ACKSequence`` that emits the fetched
   /// [`CKRecord`](https://developer.apple.com/documentation/cloudkit/ckrecord)s.
   /// - SeeAlso: [CKFetchRecordsOperation](https://developer.apple.com/documentation/cloudkit/ckfetchrecordsoperation)
   public func fetch(
     recordIDs: [CKRecord.ID],
     desiredKeys: [CKRecord.FieldKey]? = nil,
     withConfiguration configuration: CKOperation.Configuration? = nil
-  ) -> AsyncCloudKitSequence<CKRecord> {
+  ) -> ACKSequence<CKRecord> {
     fetchWithProgress(
       recordIDs: recordIDs,
       desiredKeys: desiredKeys,
       withConfiguration: configuration
     ).compactMap { _, record in
       record
-    }.eraseToAsyncCloudKitSequence()
+    }.erase()
   }
 
   /// Fetches the record with the specified ID.
@@ -380,14 +380,14 @@ extension ACKDatabase {
   ///     the record’s keys.
   ///   - configuration: The configuration to use for the underlying operation. If you don't specify a configuration,
   ///     the operation will use a default configuration.
-  /// - Returns: An ``AsyncCloudKitSequence`` that emits ``Progress`` and the fetched
+  /// - Returns: An ``ACKSequence`` that emits ``Progress`` and the fetched
   /// [`CKRecord`](https://developer.apple.com/documentation/cloudkit/ckrecord) on completion.
   /// - SeeAlso: [CKFetchRecordsOperation](https://developer.apple.com/documentation/cloudkit/ckfetchrecordsoperation)
   public func fetchWithProgress(
     recordID: CKRecord.ID,
     desiredKeys: [CKRecord.FieldKey]? = nil,
     withConfiguration configuration: CKOperation.Configuration? = nil
-  ) -> AsyncCloudKitSequence<((CKRecord.ID, Progress)?, CKRecord?)> {
+  ) -> ACKSequence<((CKRecord.ID, Progress)?, CKRecord?)> {
     fetchWithProgress(
       recordIDs: [recordID],
       desiredKeys: desiredKeys,
@@ -405,7 +405,7 @@ extension ACKDatabase {
   ///     a record’s keys.
   ///   - configuration: The configuration to use for the underlying operation. If you don't specify a configuration,
   ///     the operation will use a default configuration.
-  /// - Returns: An ``AsyncCloudKitSequence`` that emits the ``Progress`` of the fetched
+  /// - Returns: An ``ACKSequence`` that emits the ``Progress`` of the fetched
   /// [`CKRecord.ID`](https://developer.apple.com/documentation/cloudkit/ckrecord/id)s and the fetched
   /// [`CKRecord`](https://developer.apple.com/documentation/cloudkit/ckrecord)s.
   /// - SeeAlso: [CKFetchRecordsOperation](https://developer.apple.com/documentation/cloudkit/ckfetchrecordsoperation)
@@ -413,7 +413,7 @@ extension ACKDatabase {
     recordIDs: [CKRecord.ID],
     desiredKeys: [CKRecord.FieldKey]? = nil,
     withConfiguration configuration: CKOperation.Configuration? = nil
-  ) -> AsyncCloudKitSequence<((CKRecord.ID, Progress)?, CKRecord?)> {
+  ) -> ACKSequence<((CKRecord.ID, Progress)?, CKRecord?)> {
     AsyncThrowingStream { continuation in
       let operation = operationFactory.createFetchRecordsOperation(recordIDs: recordIDs)
       if configuration != nil {
@@ -446,7 +446,7 @@ extension ACKDatabase {
 
       // TODO: Ensure we only add the operation once, for every place we create an AsyncThrowingStream.
       self.add(operation)
-    }.eraseToAsyncCloudKitSequence()
+    }.erase()
   }
 
   /// Fetches the current user record.
@@ -487,7 +487,7 @@ extension ACKDatabase {
   ///     a record’s keys.
   ///   - configuration: The configuration to use for the underlying operation. If you don't specify a configuration,
   ///     the operation will use a default configuration.
-  /// - Returns: An ``AsyncCloudKitSequence`` that emits any matching
+  /// - Returns: An ``ACKSequence`` that emits any matching
   /// [`CKRecord`](https://developer.apple.com/documentation/cloudkit/ckrecord)s.
   /// - SeeAlso: [CKQuery](https://developer.apple.com/documentation/cloudkit/ckquery)
   /// - SeeAlso: [CKQueryOperation](https://developer.apple.com/documentation/cloudkit/ckqueryoperation)
@@ -500,7 +500,7 @@ extension ACKDatabase {
     inZoneWith zoneID: CKRecordZone.ID? = nil,
     desiredKeys: [CKRecord.FieldKey]? = nil,
     withConfiguration configuration: CKOperation.Configuration? = nil
-  ) -> AsyncCloudKitSequence<CKRecord> {
+  ) -> ACKSequence<CKRecord> {
     let query = CKQuery(recordType: recordType, predicate: predicate)
     query.sortDescriptors = sortDescriptors
     return perform(
@@ -525,7 +525,7 @@ extension ACKDatabase {
   ///   - configuration: The configuration to use for the underlying operation. If you don't specify a configuration,
   ///     the operation will use a default configuration.
   ///   - resultsLimit: The maximum number of records to buffer at a time.
-  /// - Returns: An ``AsyncCloudKitSequence`` that emits any matching
+  /// - Returns: An ``ACKSequence`` that emits any matching
   /// [`CKRecord`](https://developer.apple.com/documentation/cloudkit/ckrecord)s.
   /// - SeeAlso: [CKQuery](https://developer.apple.com/documentation/cloudkit/ckquery)
   /// - SeeAlso: [CKQueryOperation](https://developer.apple.com/documentation/cloudkit/ckqueryoperation)
@@ -537,7 +537,7 @@ extension ACKDatabase {
     desiredKeys: [CKRecord.FieldKey]? = nil,
     withConfiguration configuration: CKOperation.Configuration? = nil,
     resultsLimit: Int = CKQueryOperation.maximumResults
-  ) -> AsyncCloudKitSequence<CKRecord> {
+  ) -> ACKSequence<CKRecord> {
     var operation = operationFactory.createQueryOperation()
     operation.query = query
     return AsyncThrowingStream { continuation in
@@ -583,6 +583,6 @@ extension ACKDatabase {
       }
 
       addOperation()
-    }.eraseToAsyncCloudKitSequence()
+    }.erase()
   }
 }

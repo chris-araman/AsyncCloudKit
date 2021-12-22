@@ -7,6 +7,16 @@
 //
 
 extension AsyncSequence {
+  func erase() -> ACKSequence<Element> {
+    ACKSequence(self)
+  }
+
+  /// Collects all of the results from the sequence and returns them as a single array.
+  /// - Returns: An array of the results.
+  func collect() async throws -> [Element] {
+    try await reduce(into: [Element]()) { $0.append($1) }
+  }
+
   func single() async throws -> Element {
     var first: Element?
     for try await element in self {
