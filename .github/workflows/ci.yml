@@ -65,13 +65,15 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
+        # Something is amiss with async generics and thread sanitizer.
+        # https://bugs.swift.org/browse/SR-15475
         # TODO: Add 'scudo' once it is supported by Swift.
-        sanitizer: [address, thread, undefined]
+        sanitizer: [address, undefined]
         include:
           - sanitizer: address
             name: Address
-          - sanitizer: thread
-            name: Thread
+          # - sanitizer: thread
+          #   name: Thread
           - sanitizer: undefined
             name: Undefined Behavior
     steps:
