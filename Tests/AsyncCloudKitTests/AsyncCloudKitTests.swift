@@ -12,7 +12,7 @@ import XCTest
 @testable import AsyncCloudKit
 
 class AsyncCloudKitTests: XCTestCase {
-  #if SWIFT_PACKAGE || COCOAPODS
+  #if SWIFT_PACKAGE
     // Unit tests with mocks
     let container: ACKContainer = MockContainer()
     let database: ACKDatabase = MockDatabase()
