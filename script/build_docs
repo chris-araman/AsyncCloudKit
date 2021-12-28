@@ -7,9 +7,9 @@ jazzy \
   --author_url https://github.com/chris-araman \
   --clean \
   --github_url https://github.com/chris-araman/AsyncCloudKit \
-  --github-file-prefix https://github.com/chris-araman/AsyncCloudKit/tree/"$(git rev-parse HEAD)" \
+  --github-file-prefix https://github.com/chris-araman/AsyncCloudKit/tree/"$(git describe --abbrev=0 --tags)" \
   --module AsyncCloudKit \
-  --module-version "$(git describe --tags)" \
+  --module-version "$(git describe --abbrev=0 --tags)" \
   --output docs \
   --theme fullwidth
 
