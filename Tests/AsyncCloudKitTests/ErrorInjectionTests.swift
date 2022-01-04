@@ -86,7 +86,7 @@ class ErrorInjectionTests: AsyncCloudKitTests {
     _ save: (ACKDatabase) -> ((T) async throws -> T),
     _ fetch: (ACKDatabase) -> ((ID) async throws -> T),
     _ delete: (ACKDatabase) -> ((ID) async throws -> ID)
-  ) async throws where ID: Equatable {
+  ) async throws {
     try await verifyErrorPropagation { _, database in
       let item = create()
       let itemID = id(item)
