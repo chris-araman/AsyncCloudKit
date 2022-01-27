@@ -11,8 +11,7 @@ concurrency:
 jobs:
   lint:
     name: Lint
-    # TODO: Use macos-latest once it is >= 11.
-    runs-on: macos-11
+    runs-on: macos-latest
     steps:
       - name: Clone
         uses: actions/checkout@v2
@@ -26,8 +25,7 @@ jobs:
         run: script/lint
   build-test:
     name: Build & Test (Swift ${{ matrix.swift }}, ${{ matrix.platform-name || matrix.platform }})
-    # TODO: Use macos-latest once it is >= 11.
-    runs-on: macos-11
+    runs-on: macos-latest
     strategy:
       fail-fast: false
       matrix:
@@ -61,8 +59,7 @@ jobs:
           directory: .xcodecov
   sanitize:
     name: ${{ matrix.name }} Sanitizer
-    # TODO: Use macos-latest once it is >= 11.
-    runs-on: macos-11
+    runs-on: macos-latest
     strategy:
       fail-fast: false
       matrix:
