@@ -2,8 +2,8 @@
 
 Swift extensions for asynchronous CloudKit record processing. Designed for simplicity.
 
-[![Swift](https://img.shields.io/static/v1?label=swift&message=5.5&color=F05138&logo=swift&style=flat-square)](https://swiftpackageindex.com/chris-araman/AsyncCloudKit)
-[![Platforms](https://img.shields.io/static/v1?label=platforms&message=iOS+%7C+macOS+%7C+tvOS+%7C+watchOS&color=F05138&logo=apple&style=flat-square)](https://swiftpackageindex.com/chris-araman/AsyncCloudKit)
+[![Swift](https://img.shields.io/endpoint?label=swift&logo=swift&style=flat-square&url=https%3A%2F%2Fswiftpackageindex.com%2Fapi%2Fpackages%2Fchris-araman%2FAsyncCloudKit%2Fbadge%3Ftype%3Dswift-versions)](https://swiftpackageindex.com/chris-araman/AsyncCloudKit)
+[![Platforms](https://img.shields.io/endpoint?label=platforms&logo=apple&style=flat-square&url=https%3A%2F%2Fswiftpackageindex.com%2Fapi%2Fpackages%2Fchris-araman%2FAsyncCloudKit%2Fbadge%3Ftype%3Dplatforms)](https://swiftpackageindex.com/chris-araman/AsyncCloudKit)
 [![License](https://img.shields.io/github/license/chris-araman/AsyncCloudKit?style=flat-square&color=informational)](https://github.com/chris-araman/AsyncCloudKit/blob/main/LICENSE.md)
 [![Release](https://img.shields.io/github/v/tag/chris-araman/AsyncCloudKit?style=flat-square&color=informational&label=release&sort=semver)](https://github.com/chris-araman/AsyncCloudKit/releases)
 
