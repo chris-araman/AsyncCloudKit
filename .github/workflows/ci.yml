@@ -51,7 +51,7 @@ jobs:
           output: .xcodecov
           target-name-filter: AsyncCloudKit
       - name: Coverage
-        uses: codecov/codecov-action@v2
+        uses: codecov/codecov-action@v3
         with:
           flags: ${{ matrix.platform }},swift${{ matrix.swift }}
           token: ${{ secrets.CODECOV_TOKEN }}
