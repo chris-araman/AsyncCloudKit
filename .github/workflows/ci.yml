@@ -45,7 +45,7 @@ jobs:
           code-coverage: true
           warnings-as-errors: true
       - name: Prepare for Code Coverage
-        uses: sersoft-gmbh/xcode-coverage-action@v2
+        uses: sersoft-gmbh/xcode-coverage-action@v3
         with:
           fail-on-empty-output: true
           output: .xcodecov
