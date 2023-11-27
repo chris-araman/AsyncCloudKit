@@ -14,6 +14,12 @@ AsyncCloudKit exposes [CloudKit](https://developer.apple.com/documentation/cloud
 [async functions](https://docs.swift.org/swift-book/LanguageGuide/Concurrency.html#ID639) and
 [AsyncSequences](https://docs.swift.org/swift-book/LanguageGuide/Concurrency.html#ID640).
 
+## ⚠️ Deprecated
+
+I am unfortunately unable to maintain this project moving forward. If you would like to fork and maintain it, please reach out.
+
+Please consider making use of the new async functionality in CloudKit and SwiftData.
+
 ## 📦 Adding AsyncCloudKit to Your Project
 
 AsyncCloudKit is a [Swift Package](https://developer.apple.com/documentation/swift_packages).
